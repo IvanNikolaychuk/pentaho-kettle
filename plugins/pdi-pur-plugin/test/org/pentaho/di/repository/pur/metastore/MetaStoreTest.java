@@ -35,9 +35,7 @@ import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-/**
- * Created by Ivan_Nikolaichuk on 9/28/2015.
- */
+
 public class MetaStoreTest extends PurRepositoryBaseTest {
 
   @Test
