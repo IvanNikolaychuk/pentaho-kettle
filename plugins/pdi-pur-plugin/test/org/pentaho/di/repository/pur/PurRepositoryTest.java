@@ -49,6 +49,7 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.pentaho.di.base.AbstractMeta;
 import org.pentaho.di.cluster.ClusterSchema;
 import org.pentaho.di.cluster.SlaveServer;
 import org.pentaho.di.core.KettleEnvironment;
@@ -136,7 +137,7 @@ public class PurRepositoryTest extends RepositoryTestBase implements Application
 
   static final long serialVersionUID = 2064159405078106703L; /* EESOURCE: UPDATE SERIALVERUID */
 
-  private IUnifiedRepository repo;
+  protected IUnifiedRepository repo;
 
   private ITenantedPrincipleNameResolver userNameUtils = new DefaultTenantedPrincipleNameResolver();
   private ITenantedPrincipleNameResolver roleNameUtils = new DefaultTenantedPrincipleNameResolver(
@@ -1117,267 +1118,7 @@ public class PurRepositoryTest extends RepositoryTestBase implements Application
   }
 
 
-  @Test
-  public void renameJob_Successfully() throws Exception {
-    final String initial = "renameJob_Successfully";
-    final String renamed = initial + "_renamed";
 
-    JobMeta job = new JobMeta();
-    RepositoryDirectoryInterface directory = getPublicDir();
-    saveJob( job, initial, directory );
-
-    repository.renameJob( job.getObjectId(), job.getRepositoryDirectory(), renamed );
-    assertJobExistsIn( directory, renamed, "Job was not renamed" );
-  }
-
-  @Test
-  public void renameJob_CreatesNewRevision() throws Exception {
-    final String initial = "renameJob_CreatesNewRevision";
-    final String renamed = initial + "_renamed";
-
-    JobMeta job = new JobMeta();
-    saveJob( job, initial, getPublicDir() );
-
-    List<VersionSummary> historyBefore = repo.getVersionSummaries( job.getObjectId().getId() );
-    repository.renameTransformation( job.getObjectId(), job.getRepositoryDirectory(), renamed );
-    List<VersionSummary> afterBefore = repo.getVersionSummaries( job.getObjectId().getId() );
-    assertEquals( historyBefore.size() + 1, afterBefore.size() );
-  }
-
-  @Test( expected = KettleException.class )
-  public void renameJob_FailsIfANameConflictOccurs() throws Exception {
-    final String name = "renameJob_FailsIfANameConflictOccurs";
-
-    JobMeta job = new JobMeta();
-    saveJob( job, name, getPublicDir() );
-
-    repository.renameJob( job.getObjectId(), job.getRepositoryDirectory(), name );
-  }
-
-  @Test
-  public void moveJob_Successfully() throws Exception {
-    final String filename = "moveJob_Successfully";
-
-    JobMeta job = new JobMeta();
-    saveJob( job, filename, getPublicDir() );
-
-    RepositoryDirectoryInterface destFolder = getDirInsidePublic( filename );
-    assertNotNull( destFolder );
-
-    repository.renameJob( job.getObjectId(), destFolder, null );
-    assertJobExistsIn( destFolder, filename, "Job was not renamed" );
-  }
-
-  @Test
-  public void moveJob_DoesNotCreateRevision() throws Exception {
-    final String filename = "moveJob_DoesNotCreateRevision";
-
-    JobMeta job = new JobMeta();
-    saveJob( job, filename, getPublicDir() );
-
-    List<VersionSummary> historyBefore = repo.getVersionSummaries( job.getObjectId().getId() );
-    repository.renameTransformation( job.getObjectId(), getDirInsidePublic( filename ), null );
-    List<VersionSummary> historyAfter = repo.getVersionSummaries( job.getObjectId().getId() );
-
-    assertEquals( historyBefore.size(), historyAfter.size() );
-  }
-
-  @Test( expected = KettleException.class )
-  public void moveJob_FailsIfANameConflictOccurs() throws Exception {
-    final String filename = "moveJob_FailsIfANameConflictOccurs";
-
-    JobMeta job = new JobMeta();
-    RepositoryDirectoryInterface directory = getPublicDir();
-    saveJob( job, filename, directory );
-
-    JobMeta anotherJob = new JobMeta();
-    RepositoryDirectoryInterface destFolder = getDirInsidePublic( filename );
-    saveJob( anotherJob, filename, destFolder );
-
-    repository.renameJob( job.getObjectId(), destFolder, null );
-  }
-
-  @Test
-  public void moveAndRenameJob_Successfully() throws Exception {
-    final String filename = "moveAndRenameJob_Successfully";
-    final String renamed = filename + "_renamed";
-
-    JobMeta job = new JobMeta();
-    saveJob( job, filename, getPublicDir() );
-
-    RepositoryDirectoryInterface destFolder = getDirInsidePublic( filename );
-    assertNotNull( destFolder );
-
-    repository.renameJob( job.getObjectId(), destFolder, renamed );
-    assertJobExistsIn( destFolder, renamed, "Job was not renamed" );
-  }
-
-  @Test( expected = KettleException.class )
-  public void moveAndRenameJob_FailsIfANameConflictOccurs() throws Exception {
-    final String filename = "moveAndRenameJob_FailsIfANameConflictOccurs";
-    final String renamed = filename + "_renamed";
-
-    JobMeta job = new JobMeta();
-    RepositoryDirectoryInterface directory = getPublicDir();
-    saveJob( job, filename, directory );
-
-    JobMeta anotherJob = new JobMeta();
-    RepositoryDirectoryInterface destFolder = getDirInsidePublic( filename );
-    saveJob( anotherJob, renamed, destFolder );
-
-    repository.renameJob( job.getObjectId(), destFolder, renamed );
-  }
-
-  private RepositoryDirectoryInterface getPublicDir() throws Exception {
-    return repository.findDirectory( "public" );
-  }
-
-  private RepositoryDirectoryInterface getDirInsidePublic( String dirName ) throws Exception {
-    RepositoryDirectoryInterface child = getPublicDir().findChild( dirName );
-    return ( child == null ) ? repository.createRepositoryDirectory( getPublicDir(), dirName ) : child;
-  }
-
-  private void saveJob( JobMeta job, String name, RepositoryDirectoryInterface directory ) throws Exception {
-    saveElement( job, name, directory );
-    assertJobExistsIn( directory, name, "Job was not saved" );
-  }
-
-  private void saveElement( RepositoryElementInterface element, String name, RepositoryDirectoryInterface directory )
-    throws Exception {
-    assertNotNull( directory );
-
-    element.setName( name );
-    element.setRepositoryDirectory( directory );
-    repository.save( element, null, null );
-  }
-
-  private void assertJobExistsIn( RepositoryDirectoryInterface dir, String jobName, String assertMessage )
-    throws Exception {
-    List<String> existingJobs = asList( repository.getJobNames( dir.getObjectId(), false ) );
-    assertThat( assertMessage, existingJobs, hasItem( jobName ) );
-  }
-
-  @Test
-  public void renameTrans_Successfully() throws Exception {
-    final String initial = "renameTrans_Successfully";
-    final String renamed = initial + "_renamed";
-
-    TransMeta trans = new TransMeta();
-    RepositoryDirectoryInterface directory = getPublicDir();
-    saveTrans( trans, initial, directory );
-
-    repository.renameTransformation( trans.getObjectId(), trans.getRepositoryDirectory(), renamed );
-    assertTransExistsIn( directory, renamed, "Trans was not renamed" );
-  }
-
-  @Test
-  public void renameTrans_CreatesNewRevision() throws Exception {
-    final String initial = "renameTrans_CreatesNewRevision";
-    final String renamed = initial + "_renamed";
-
-    TransMeta trans = new TransMeta();
-    saveTrans( trans, initial, getPublicDir() );
-
-    List<VersionSummary> historyBefore = repo.getVersionSummaries( trans.getObjectId().getId() );
-    repository.renameTransformation( trans.getObjectId(), trans.getRepositoryDirectory(), renamed );
-    List<VersionSummary> afterBefore = repo.getVersionSummaries( trans.getObjectId().getId() );
-    assertEquals( historyBefore.size() + 1, afterBefore.size() );
-  }
-
-  @Test( expected = KettleException.class )
-  public void renameTrans_FailsIfANameConflictOccurs() throws Exception {
-    final String name = "renameTrans_FailsIfANameConflictOccurs";
-
-    TransMeta trans = new TransMeta();
-    saveTrans( trans, name, getPublicDir() );
-
-    repository.renameTransformation( trans.getObjectId(), trans.getRepositoryDirectory(), name );
-  }
-
-  @Test
-  public void moveTrans_Successfully() throws Exception {
-    final String filename = "moveTrans_Successfully";
-
-    TransMeta trans = new TransMeta();
-    saveTrans( trans, filename, getPublicDir() );
-
-    RepositoryDirectoryInterface destFolder = getDirInsidePublic( filename );
-    assertNotNull( destFolder );
-
-    repository.renameTransformation( trans.getObjectId(), destFolder, null );
-    assertTransExistsIn( destFolder, filename, "Trans was not renamed" );
-  }
-
-  @Test
-  public void moveTrans_DoesNotCreateRevision() throws Exception {
-    final String filename = "moveTrans_DoesNotCreateRevision";
-
-    TransMeta trans = new TransMeta();
-    saveTrans( trans, filename, getPublicDir() );
-
-    List<VersionSummary> historyBefore = repo.getVersionSummaries( trans.getObjectId().getId() );
-    repository.renameTransformation( trans.getObjectId(), getDirInsidePublic( filename ), null );
-    List<VersionSummary> historyAfter = repo.getVersionSummaries( trans.getObjectId().getId() );
-
-    assertEquals( historyBefore.size(), historyAfter.size() );
-  }
-
-  @Test( expected = KettleException.class )
-  public void moveTrans_FailsIfANameConflictOccurs() throws Exception {
-    final String filename = "moveTrans_FailsIfANameConflictOccurs";
-
-    TransMeta trans = new TransMeta();
-    RepositoryDirectoryInterface directory = getPublicDir();
-    saveTrans( trans, filename, directory );
-
-    TransMeta anotherTrans = new TransMeta();
-    RepositoryDirectoryInterface destFolder = getDirInsidePublic( filename );
-    saveTrans( anotherTrans, filename, destFolder );
-
-    repository.renameTransformation( trans.getObjectId(), destFolder, null );
-  }
-
-  @Test
-  public void moveAndRenameTrans_Successfully() throws Exception {
-    final String filename = "moveAndRenameTrans_Successfully";
-    final String renamed = filename + "_renamed";
-
-    TransMeta trans = new TransMeta();
-    saveTrans( trans, filename, getPublicDir() );
-
-    RepositoryDirectoryInterface destFolder = getDirInsidePublic( filename );
-    assertNotNull( destFolder );
-
-    repository.renameTransformation( trans.getObjectId(), destFolder, renamed );
-    assertTransExistsIn( destFolder, renamed, "Trans was not renamed" );
-  }
-
-  @Test( expected = KettleException.class )
-  public void moveAndRenameTrans_FailsIfANameConflictOccurs() throws Exception {
-    final String filename = "moveAndRenameTrans_FailsIfANameConflictOccurs";
-    final String renamed = filename + "_renamed";
-
-    TransMeta trans = new TransMeta();
-    RepositoryDirectoryInterface directory = getPublicDir();
-    saveTrans( trans, filename, directory );
-
-    TransMeta anotherTrans = new TransMeta();
-    RepositoryDirectoryInterface destFolder = getDirInsidePublic( filename );
-    saveTrans( anotherTrans, renamed, destFolder );
-
-    repository.renameTransformation( trans.getObjectId(), destFolder, renamed );
-  }
-
-  private void saveTrans( TransMeta trans, String name, RepositoryDirectoryInterface directory ) throws Exception {
-    saveElement( trans, name, directory );
-    assertTransExistsIn( directory, name, "Trans was not saved" );
-  }
-
-  private void assertTransExistsIn( RepositoryDirectoryInterface dir, String transName, String assertMessage )
-    throws Exception {
-    List<String> existingTrans = asList( repository.getTransformationNames( dir.getObjectId(), false ) );
-    assertThat( assertMessage, existingTrans, hasItem( transName ) );
-  }
 
   @Test
   public void testJobRevisionDate() {
@@ -1394,11 +1135,12 @@ public class PurRepositoryTest extends RepositoryTestBase implements Application
       repository.save( job, VERSION_COMMENT_V1, cal, null, true );
 
       assertEquals( "Revision date is incorrect", job.getObjectRevision().getCreationDate().getTime(),
-          (long) createdTime );
+        (long) createdTime );
     } catch ( Exception e ) {
       e.printStackTrace();
       fail( "Unexpected error" );
     }
   }
+
 
 }

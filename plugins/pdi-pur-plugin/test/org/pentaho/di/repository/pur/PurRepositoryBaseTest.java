@@ -234,8 +234,6 @@ public abstract class PurRepositoryBaseTest implements ApplicationContextAware {
     setSession( session, authentication );
   }
 
-
-
   @After
   public void tearDown() throws Exception {
     cleanupUserAndRoles( testingTenant );
@@ -266,8 +264,6 @@ public abstract class PurRepositoryBaseTest implements ApplicationContextAware {
       userRoleDao.deleteUser( user );
     }
   }
-
-
 
   @Override
   public void setApplicationContext( ApplicationContext applicationContext ) throws BeansException {
