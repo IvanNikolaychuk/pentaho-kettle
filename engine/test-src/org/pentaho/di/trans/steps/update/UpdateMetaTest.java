@@ -30,7 +30,7 @@ import static org.mockito.Mockito.when;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
 import org.apache.commons.lang.StringUtils;
 import org.junit.Assert;
@@ -50,7 +50,7 @@ import org.pentaho.di.trans.TransMeta;
 import org.pentaho.di.trans.step.StepMeta;
 import org.pentaho.metastore.api.IMetaStore;
 
-public class UpdateMetaTest extends TestCase {
+public class UpdateMetaTest  {
 
   private StepMeta stepMeta;
   private Update upd;
@@ -65,7 +65,7 @@ public class UpdateMetaTest extends TestCase {
 
 
   @Before
-  protected void setUp() throws KettleException {
+  public void setUp() throws KettleException {
     KettleEnvironment.init();
     TransMeta transMeta = new TransMeta();
     transMeta.setName( "delete1" );

@@ -27,16 +27,18 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
+import org.junit.Test;
 import org.pentaho.di.core.row.value.ValueMetaString;
+
 
 /**
  * Test functionality in ValueMeta
  *
  * @author sboden
  */
-public class ValueMetaTest extends TestCase {
+public class ValueMetaTest {
   /**
    * Compare to byte arrays for equality.
    *
@@ -51,7 +53,7 @@ public class ValueMetaTest extends TestCase {
 
     int idx = 0;
     while ( idx < b1.length ) {
-      if ( b1[idx] != b2[idx] ) {
+      if ( b1[ idx ] != b2[ idx ] ) {
         return false;
       }
       idx++;
@@ -59,6 +61,26 @@ public class ValueMetaTest extends TestCase {
     return true;
   }
 
+  public void testCompareObjectNormalStorageData(ValueMetaInterface one, ValueMetaInterface two, Object obj1,
+                                                 Object obj2, Object obj3, Object obj4) throws Exception {
+    Object obj5 = null;
+    Object obj6 = null;
+
+    assertTrue( one.compare( obj1, obj2 ) < 0 );
+    assertTrue( one.compare( obj1, obj3 ) > 0 );
+    assertTrue( one.compare( obj1, obj4 ) == 0 );
+    assertTrue( one.compare( obj1, obj5 ) != 0 );
+    assertTrue( one.compare( obj5, obj6 ) == 0 );
+
+    assertTrue( one.compare( obj1, two, obj2 ) < 0 );
+    assertTrue( one.compare( obj1, two, obj3 ) > 0 );
+    assertTrue( one.compare( obj1, two, obj4 ) == 0 );
+    assertTrue( one.compare( obj1, two, obj5 ) != 0 );
+    assertTrue( one.compare( obj5, two, obj6 ) == 0 );
+
+  }
+
+  @Test
   public void testCvtStringToBinaryString() throws Exception {
     ValueMeta val1 = new ValueMeta( "STR1", ValueMetaInterface.TYPE_STRING );
     val1.setLength( 6 );
@@ -66,34 +88,35 @@ public class ValueMetaTest extends TestCase {
 
     // No truncating or padding!!!
     byte[] b1 = val1.getBinary( "PDI123" );
-    assertTrue( byteCompare( b1, new byte[]{ 'P', 'D', 'I', '1', '2', '3' } ) );
+    assertTrue( byteCompare( b1, new byte[] { 'P', 'D', 'I', '1', '2', '3' } ) );
 
     byte[] b2 = val1.getBinary( "PDI" );
-    assertTrue( byteCompare( b2, new byte[]{ 'P', 'D', 'I' } ) );
+    assertTrue( byteCompare( b2, new byte[] { 'P', 'D', 'I' } ) );
 
     byte[] b3 = val1.getBinary( "PDI123456" );
-    assertTrue( byteCompare( b3, new byte[]{ 'P', 'D', 'I', '1', '2', '3', '4', '5', '6' } ) );
+    assertTrue( byteCompare( b3, new byte[] { 'P', 'D', 'I', '1', '2', '3', '4', '5', '6' } ) );
 
     ValueMeta val2 = new ValueMeta( "STR2", ValueMetaInterface.TYPE_STRING );
     val2.setLength( 1 );
 
     byte[] b4 = val2.getBinary( "PDI123" );
-    assertTrue( byteCompare( b4, new byte[]{ 'P', 'D', 'I', '1', '2', '3' } ) );
+    assertTrue( byteCompare( b4, new byte[] { 'P', 'D', 'I', '1', '2', '3' } ) );
 
     byte[] b5 = val2.getBinary( "PDI" );
-    assertTrue( byteCompare( b5, new byte[]{ 'P', 'D', 'I' } ) );
+    assertTrue( byteCompare( b5, new byte[] { 'P', 'D', 'I' } ) );
 
     byte[] b6 = val2.getBinary( "PDI123456" );
-    assertTrue( byteCompare( b6, new byte[]{ 'P', 'D', 'I', '1', '2', '3', '4', '5', '6' } ) );
+    assertTrue( byteCompare( b6, new byte[] { 'P', 'D', 'I', '1', '2', '3', '4', '5', '6' } ) );
   }
 
+  @Test
   public void testCvtStringBinaryString() throws Exception {
     ValueMeta val1 = new ValueMeta( "STR1", ValueMetaInterface.TYPE_STRING );
     val1.setLength( 6 );
     val1.setStringEncoding( "UTF8" );
 
     ValueMeta val2 =
-        new ValueMeta( "BINSTR1", ValueMetaInterface.TYPE_STRING, ValueMetaInterface.STORAGE_TYPE_BINARY_STRING );
+      new ValueMeta( "BINSTR1", ValueMetaInterface.TYPE_STRING, ValueMetaInterface.STORAGE_TYPE_BINARY_STRING );
     val2.setStorageMetadata( val1 );
     val2.setLength( 6 );
     val2.setStringEncoding( "UTF8" );
@@ -108,6 +131,7 @@ public class ValueMetaTest extends TestCase {
     assertTrue( "PDI123456".equals( str3 ) );
   }
 
+  @Test
   public void testIntegerToStringToInteger() throws Exception {
     ValueMetaInterface intValueMeta = new ValueMeta( "i", ValueMetaInterface.TYPE_INTEGER );
     intValueMeta.setConversionMask( null );
@@ -127,6 +151,7 @@ public class ValueMetaTest extends TestCase {
     assertEquals( originalValue, x );
   }
 
+  @Test
   public void testNumberToStringToNumber() throws Exception {
     ValueMetaInterface numValueMeta = new ValueMeta( "i", ValueMetaInterface.TYPE_NUMBER );
     numValueMeta.setConversionMask( null );
@@ -148,6 +173,7 @@ public class ValueMetaTest extends TestCase {
     assertEquals( originalValue, x );
   }
 
+  @Test
   public void testBigNumberToStringToBigNumber() throws Exception {
     ValueMetaInterface numValueMeta = new ValueMeta( "i", ValueMetaInterface.TYPE_BIGNUMBER );
     numValueMeta.setLength( 42, 9 );
@@ -168,6 +194,7 @@ public class ValueMetaTest extends TestCase {
     assertEquals( originalValue, x );
   }
 
+  @Test
   public void testDateToStringToDate() throws Exception {
     TimeZone.setDefault( TimeZone.getTimeZone( "CET" ) );
 
@@ -187,6 +214,7 @@ public class ValueMetaTest extends TestCase {
     assertEquals( originalValue, x );
   }
 
+  @Test
   public void testDateStringDL8601() throws Exception {
     TimeZone.setDefault( TimeZone.getTimeZone( "America/New_York" ) );
 
@@ -233,6 +261,7 @@ public class ValueMetaTest extends TestCase {
     }
   }
 
+  @Test
   public void testDateStringUTC() throws Exception {
     TimeZone.setDefault( TimeZone.getTimeZone( "America/New_York" ) );
 
@@ -251,6 +280,7 @@ public class ValueMetaTest extends TestCase {
     }
   }
 
+  @Test
   public void testDateStringOffset() throws Exception {
     TimeZone.setDefault( TimeZone.getTimeZone( "America/New_York" ) );
 
@@ -282,6 +312,7 @@ public class ValueMetaTest extends TestCase {
     }
   }
 
+  @Test
   public void testDateString8601() throws Exception {
     TimeZone.setDefault( TimeZone.getTimeZone( "Europe/Kaliningrad" ) );
 
@@ -308,6 +339,7 @@ public class ValueMetaTest extends TestCase {
     }
   }
 
+  @Test
   public void testConvertDataDate() throws Exception {
     TimeZone.setDefault( TimeZone.getTimeZone( "CET" ) );
 
@@ -325,6 +357,7 @@ public class ValueMetaTest extends TestCase {
 
   }
 
+  @Test
   public void testConvertDataInteger() throws Exception {
     ValueMetaInterface source = new ValueMeta( "src", ValueMetaInterface.TYPE_STRING );
     source.setConversionMask( " #,##0" );
@@ -344,6 +377,7 @@ public class ValueMetaTest extends TestCase {
     assertEquals( "2'837.00", string );
   }
 
+  @Test
   public void testConvertDataNumber() throws Exception {
     ValueMetaInterface source = new ValueMeta( "src", ValueMetaInterface.TYPE_STRING );
     source.setConversionMask( "###,###,##0.000" );
@@ -353,7 +387,7 @@ public class ValueMetaTest extends TestCase {
     ValueMetaInterface target = new ValueMeta( "tgt", ValueMetaInterface.TYPE_NUMBER );
 
     Double d = (Double) target.convertData( source, "123.456.789,012" );
-    assertEquals( 123456789.012, d );
+    assertEquals( new Double( 123456789.012 ), d );
 
     target.setConversionMask( "###,###,##0.00" );
     target.setLength( 12, 4 );
@@ -372,6 +406,7 @@ public class ValueMetaTest extends TestCase {
    *
    * @throws Exception
    */
+  @Test
   public void testLazyConversionInteger() throws Exception {
     byte[] data = ( "1234" ).getBytes();
     ValueMetaInterface intValueMeta = new ValueMeta( "i", ValueMetaInterface.TYPE_INTEGER );
@@ -401,6 +436,7 @@ public class ValueMetaTest extends TestCase {
    *
    * @throws Exception
    */
+  @Test
   public void testLazyConversionNumber() throws Exception {
     byte[] data = ( "1,234.56" ).getBytes();
     ValueMetaInterface numValueMeta = new ValueMeta( "i", ValueMetaInterface.TYPE_NUMBER );
@@ -447,6 +483,7 @@ public class ValueMetaTest extends TestCase {
    *
    * @throws Exception
    */
+  @Test
   public void testLazyConversionBigNumber() throws Exception {
     String originalValue = "34983433433212304121900934.5634314343";
     byte[] data = originalValue.getBytes();
@@ -486,102 +523,60 @@ public class ValueMetaTest extends TestCase {
     assertEquals( originalValue, string );
   }
 
+  @Test
   public void testCompareIntegersNormalStorageData() throws Exception {
     Long integer1 = new Long( 1234L );
     Long integer2 = new Long( 1235L );
     Long integer3 = new Long( 1233L );
     Long integer4 = new Long( 1234L );
-    Long integer5 = null;
-    Long integer6 = null;
 
     ValueMetaInterface one = new ValueMeta( "one", ValueMetaInterface.TYPE_INTEGER );
     ValueMetaInterface two = new ValueMeta( "two", ValueMetaInterface.TYPE_INTEGER );
 
-    assertTrue( one.compare( integer1, integer2 ) < 0 );
-    assertTrue( one.compare( integer1, integer3 ) > 0 );
-    assertTrue( one.compare( integer1, integer4 ) == 0 );
-    assertTrue( one.compare( integer1, integer5 ) != 0 );
-    assertTrue( one.compare( integer5, integer6 ) == 0 );
-
-    assertTrue( one.compare( integer1, two, integer2 ) < 0 );
-    assertTrue( one.compare( integer1, two, integer3 ) > 0 );
-    assertTrue( one.compare( integer1, two, integer4 ) == 0 );
-    assertTrue( one.compare( integer1, two, integer5 ) != 0 );
-    assertTrue( one.compare( integer5, two, integer6 ) == 0 );
+    testCompareObjectNormalStorageData( one, two, integer1, integer2, integer3, integer4 );
   }
 
+  @Test
   public void testCompareNumbersNormalStorageData() throws Exception {
     Double number1 = new Double( 1234.56 );
     Double number2 = new Double( 1235.56 );
     Double number3 = new Double( 1233.56 );
     Double number4 = new Double( 1234.56 );
-    Double number5 = null;
-    Double number6 = null;
 
     ValueMetaInterface one = new ValueMeta( "one", ValueMetaInterface.TYPE_NUMBER );
     ValueMetaInterface two = new ValueMeta( "two", ValueMetaInterface.TYPE_NUMBER );
 
-    assertTrue( one.compare( number1, number2 ) < 0 );
-    assertTrue( one.compare( number1, number3 ) > 0 );
-    assertTrue( one.compare( number1, number4 ) == 0 );
-    assertTrue( one.compare( number1, number5 ) != 0 );
-    assertTrue( one.compare( number5, number6 ) == 0 );
-
-    assertTrue( one.compare( number1, two, number2 ) < 0 );
-    assertTrue( one.compare( number1, two, number3 ) > 0 );
-    assertTrue( one.compare( number1, two, number4 ) == 0 );
-    assertTrue( one.compare( number1, two, number5 ) != 0 );
-    assertTrue( one.compare( number5, two, number6 ) == 0 );
+    testCompareObjectNormalStorageData( one, two, number1, number2, number3, number4 );
   }
 
+  @Test
   public void testCompareBigNumberNormalStorageData() throws Exception {
     BigDecimal number1 = new BigDecimal( "987908798769876.23943409" );
     BigDecimal number2 = new BigDecimal( "999908798769876.23943409" );
     BigDecimal number3 = new BigDecimal( "955908798769876.23943409" );
     BigDecimal number4 = new BigDecimal( "987908798769876.23943409" );
-    BigDecimal number5 = null;
-    BigDecimal number6 = null;
 
     ValueMetaInterface one = new ValueMeta( "one", ValueMetaInterface.TYPE_BIGNUMBER );
     ValueMetaInterface two = new ValueMeta( "two", ValueMetaInterface.TYPE_BIGNUMBER );
 
-    assertTrue( one.compare( number1, number2 ) < 0 );
-    assertTrue( one.compare( number1, number3 ) > 0 );
-    assertTrue( one.compare( number1, number4 ) == 0 );
-    assertTrue( one.compare( number1, number5 ) != 0 );
-    assertTrue( one.compare( number5, number6 ) == 0 );
-
-    assertTrue( one.compare( number1, two, number2 ) < 0 );
-    assertTrue( one.compare( number1, two, number3 ) > 0 );
-    assertTrue( one.compare( number1, two, number4 ) == 0 );
-    assertTrue( one.compare( number1, two, number5 ) != 0 );
-    assertTrue( one.compare( number5, two, number6 ) == 0 );
+    testCompareObjectNormalStorageData( one, two, number1, number2, number3, number4 );
   }
 
+  @Test
   public void testCompareDatesNormalStorageData() throws Exception {
     Date date1 = new Date();
     Date date2 = new Date( date1.getTime() + 3600 );
     Date date3 = new Date( date1.getTime() - 3600 );
     Date date4 = new Date( date1.getTime() );
-    Date date5 = null;
-    Date date6 = null;
 
     ValueMetaInterface one = new ValueMeta( "one", ValueMetaInterface.TYPE_DATE );
     ValueMetaInterface two = new ValueMeta( "two", ValueMetaInterface.TYPE_DATE );
 
-    assertTrue( one.compare( date1, date2 ) < 0 );
-    assertTrue( one.compare( date1, date3 ) > 0 );
-    assertTrue( one.compare( date1, date4 ) == 0 );
-    assertTrue( one.compare( date1, date5 ) != 0 );
-    assertTrue( one.compare( date5, date6 ) == 0 );
+    testCompareObjectNormalStorageData( one, two, date1, date2, date3, date4 );
 
-    assertTrue( one.compare( date1, two, date2 ) < 0 );
-    assertTrue( one.compare( date1, two, date3 ) > 0 );
-    assertTrue( one.compare( date1, two, date4 ) == 0 );
-    assertTrue( one.compare( date1, two, date5 ) != 0 );
-    assertTrue( one.compare( date5, two, date6 ) == 0 );
   }
 
+  @Test
   public void testCompareBooleanNormalStorageData() throws Exception {
     Boolean boolean1 = new Boolean( false );
     Boolean boolean2 = new Boolean( true );
@@ -603,30 +598,21 @@ public class ValueMetaTest extends TestCase {
     assertTrue( one.compare( boolean4, two, boolean5 ) == 0 );
   }
 
+  @Test
   public void testCompareStringsNormalStorageData() throws Exception {
     String string1 = "bbbbb";
     String string2 = "ccccc";
     String string3 = "aaaaa";
     String string4 = "bbbbb";
-    String string5 = null;
-    String string6 = null;
 
     ValueMetaInterface one = new ValueMeta( "one", ValueMetaInterface.TYPE_STRING );
     ValueMetaInterface two = new ValueMeta( "two", ValueMetaInterface.TYPE_STRING );
 
-    assertTrue( one.compare( string1, string2 ) < 0 );
-    assertTrue( one.compare( string1, string3 ) > 0 );
-    assertTrue( one.compare( string1, string4 ) == 0 );
-    assertTrue( one.compare( string1, string5 ) != 0 );
-    assertTrue( one.compare( string5, string6 ) == 0 );
-
-    assertTrue( one.compare( string1, two, string2 ) < 0 );
-    assertTrue( one.compare( string1, two, string3 ) > 0 );
-    assertTrue( one.compare( string1, two, string4 ) == 0 );
-    assertTrue( one.compare( string1, two, string5 ) != 0 );
-    assertTrue( one.compare( string5, two, string6 ) == 0 );
+    testCompareObjectNormalStorageData( one, two, string1, string2, string3, string4 );
   }
 
+
+  @Test
   public void testValueMetaInheritance() {
     assertTrue( new ValueMeta() instanceof ValueMetaInterface );
   }

@@ -28,17 +28,20 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
+import org.junit.Test;
+
 
 /**
  * Test class for the basic functionality of ValueNumber.
  *
  * @author Sven Boden
  */
-public class ValueNumberTest extends TestCase {
+public class ValueNumberTest  {
   /**
    * Constructor test 1.
    */
+  @Test
   public void testConstructor1() {
     ValueNumber vs = new ValueNumber();
 
@@ -65,6 +68,7 @@ public class ValueNumberTest extends TestCase {
   /**
    * Test the getters of ValueNumber
    */
+  @Test
   public void testGetters() {
     ValueNumber vs1 = new ValueNumber( -4.0D );
     ValueNumber vs2 = new ValueNumber( 0.0D );
@@ -106,6 +110,7 @@ public class ValueNumberTest extends TestCase {
   /**
    * Test the setters of ValueNumber
    */
+  @Test
   public void testSetters() {
     ValueNumber vs = new ValueNumber( 0.0D );
 

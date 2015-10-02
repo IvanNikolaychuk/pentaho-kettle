@@ -29,17 +29,22 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * Test class for the basic functionality of ValueNumber.
  *
  * @author Sven Boden
  */
-public class ValueBigNumberTest extends TestCase {
+public class ValueBigNumberTest {
   /**
    * Constructor test 1.
    */
+
+  @Test
   public void testConstructor1() {
     ValueBigNumber vs = new ValueBigNumber();
 
@@ -66,6 +71,7 @@ public class ValueBigNumberTest extends TestCase {
   /**
    * Test the getters of ValueBigNumber
    */
+  @Test
   public void testGetters() {
     ValueBigNumber vs1 = new ValueBigNumber();
     ValueBigNumber vs2 = new ValueBigNumber( BigDecimal.ZERO );
@@ -103,6 +109,7 @@ public class ValueBigNumberTest extends TestCase {
   /**
    * Test the setters of ValueBigNumber
    */
+  @Test
   public void testSetters() {
     TimeZone.setDefault( TimeZone.getTimeZone( "CET" ) );
 

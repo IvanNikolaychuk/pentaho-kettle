@@ -24,6 +24,7 @@ package org.pentaho.di.core.sql;
 
 import java.util.List;
 
+import org.junit.Test;
 import org.pentaho.di.core.exception.KettleSQLException;
 import org.pentaho.di.core.jdbc.ThinUtil;
 import org.pentaho.di.core.row.RowMeta;
@@ -31,10 +32,11 @@ import org.pentaho.di.core.row.RowMetaInterface;
 import org.pentaho.di.core.row.ValueMeta;
 import org.pentaho.di.core.row.ValueMetaInterface;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
-public class SQLTest extends TestCase {
+public class SQLTest  {
 
+  @Test
   public void testSql01() throws KettleSQLException {
     RowMetaInterface rowMeta = generateTest3RowMeta();
 
@@ -65,6 +67,7 @@ public class SQLTest extends TestCase {
     assertEquals( "B", orderField.getValueMeta().getName().toUpperCase() );
   }
 
+  @Test
   public void testSql02() throws KettleSQLException {
     RowMetaInterface rowMeta = generateTest3RowMeta();
 
@@ -82,6 +85,7 @@ public class SQLTest extends TestCase {
     assertEquals( "B DESC", sql.getOrderClause() );
   }
 
+  @Test
   public void testSql03() throws KettleSQLException {
     RowMetaInterface rowMeta = generateTest3RowMeta();
 
@@ -100,6 +104,7 @@ public class SQLTest extends TestCase {
     assertEquals( "A,B,C", sql.getOrderClause() );
   }
 
+  @Test
   public void testSql04() throws KettleSQLException {
     RowMetaInterface rowMeta = generateTest3RowMeta();
 
@@ -130,6 +135,7 @@ public class SQLTest extends TestCase {
     assertEquals( "B", orderField.getValueMeta().getName().toUpperCase() );
   }
 
+  @Test
   public void testSql05() throws KettleSQLException {
     RowMetaInterface rowMeta = generateTest3RowMeta();
 
@@ -159,6 +165,7 @@ public class SQLTest extends TestCase {
    *
    * @throws KettleSQLException
    */
+  @Test
   public void testSql06() throws KettleSQLException {
     RowMetaInterface rowMeta = generateServiceRowMeta();
 
@@ -188,6 +195,7 @@ public class SQLTest extends TestCase {
    *
    * @throws KettleSQLException
    */
+  @Test
   public void testSql07() throws KettleSQLException {
     RowMetaInterface rowMeta = generateServiceRowMeta();
 
@@ -214,6 +222,7 @@ public class SQLTest extends TestCase {
    *
    * @throws KettleSQLException
    */
+  @Test
   public void testSql08() throws KettleSQLException {
     RowMetaInterface rowMeta = generateZipsRowMeta();
 
@@ -242,6 +251,7 @@ public class SQLTest extends TestCase {
    *
    * @throws KettleSQLException
    */
+  @Test
   public void testSql09() throws KettleSQLException {
     RowMetaInterface rowMeta = generateServiceRowMeta();
 
@@ -267,6 +277,7 @@ public class SQLTest extends TestCase {
    *
    * @throws KettleSQLException
    */
+  @Test
   public void testSql10() throws KettleSQLException {
     RowMetaInterface rowMeta = generateServiceRowMeta();
 
@@ -292,6 +303,7 @@ public class SQLTest extends TestCase {
    *
    * @throws KettleSQLException
    */
+  @Test
   public void testSql11() throws KettleSQLException {
     RowMetaInterface rowMeta = generateServiceRowMeta();
 
@@ -317,6 +329,7 @@ public class SQLTest extends TestCase {
    *
    * @throws KettleSQLException
    */
+  @Test
   public void testSql12() throws KettleSQLException {
     RowMetaInterface rowMeta = generateServiceRowMeta();
 
@@ -342,6 +355,7 @@ public class SQLTest extends TestCase {
    *
    * @throws KettleSQLException
    */
+  @Test
   public void testSql13() throws KettleSQLException {
     RowMetaInterface rowMeta = generateGettingStartedRowMeta();
 
@@ -364,6 +378,7 @@ public class SQLTest extends TestCase {
    *
    * @throws KettleSQLException
    */
+  @Test
   public void testSql14() throws KettleSQLException {
     RowMetaInterface rowMeta = generateGettingStartedRowMeta();
 
@@ -385,6 +400,7 @@ public class SQLTest extends TestCase {
    *
    * @throws KettleSQLException
    */
+  @Test
   public void testSql15() throws KettleSQLException {
     RowMetaInterface rowMeta = generateGettingStartedRowMeta();
 
@@ -407,6 +423,7 @@ public class SQLTest extends TestCase {
    *
    * @throws KettleSQLException
    */
+  @Test
   public void testSql16() throws KettleSQLException {
     RowMetaInterface rowMeta = generateGettingStartedRowMeta();
 
@@ -430,6 +447,7 @@ public class SQLTest extends TestCase {
    *
    * @throws KettleSQLException
    */
+  @Test
   public void testSql17() throws KettleSQLException {
     RowMetaInterface rowMeta = generateGettingStartedRowMeta();
 
@@ -448,6 +466,7 @@ public class SQLTest extends TestCase {
 
   }
 
+  @Test
   public void testSql18() throws KettleSQLException {
 
     String sqlString = "SELECT A, B, C\nFROM Service\nWHERE B > 5\nORDER BY B DESC\nLIMIT 5    OFFSET    10";

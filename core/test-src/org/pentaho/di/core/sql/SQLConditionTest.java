@@ -22,21 +22,30 @@
 
 package org.pentaho.di.core.sql;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
+import static org.pentaho.di.core.Condition.*;
+
+import org.junit.Test;
 import org.pentaho.di.core.Condition;
 import org.pentaho.di.core.exception.KettleSQLException;
 import org.pentaho.di.core.row.RowMetaInterface;
 
-public class SQLConditionTest extends TestCase {
-
+public class SQLConditionTest  {
+  @Test
   public void testCondition01() throws KettleSQLException {
-    RowMetaInterface rowMeta = SQLTest.generateTest4RowMeta();
-
-    String fieldsClause = "A, B";
     String conditionClause = "A = 'FOO'";
 
     // Correctness of the next statement is tested in SQLFieldsTest
     //
+    testSimpleCondition( conditionClause, "A", functions[FUNC_EQUAL], "FOO" );
+  }
+
+  // only for simple conditions like (A >= B)
+  // not for conditions like ( A='Foo' ) AND ( B>5 )
+  public void testSimpleCondition( String conditionClause, String leftValue, String funcDesc, String rightExact) throws KettleSQLException {
+    final String fieldsClause = "A, B";
+
+    RowMetaInterface rowMeta = SQLTest.generateTest4RowMeta();
     SQLFields fields = new SQLFields( "Service", rowMeta, fieldsClause );
 
     SQLCondition sqlCondition = new SQLCondition( "Service", conditionClause, rowMeta, fields );
@@ -45,287 +54,127 @@ public class SQLConditionTest extends TestCase {
     assertNotNull( condition );
     assertFalse( condition.isEmpty() );
     assertTrue( condition.isAtomic() );
-    assertEquals( "A", condition.getLeftValuename() );
-    assertEquals( "=", condition.getFunctionDesc() );
-    assertEquals( "FOO", condition.getRightExactString() );
+    assertEquals( leftValue, condition.getLeftValuename() );
+    assertEquals( funcDesc, condition.getFunctionDesc() );
+    assertEquals( rightExact, condition.getRightExactString() );
   }
 
-  public void testCondition02() throws KettleSQLException {
-    RowMetaInterface rowMeta = SQLTest.generateTest4RowMeta();
 
-    String fieldsClause = "A, B";
+  @Test
+  public void testCondition02() throws KettleSQLException {
     String conditionClause = "B > 123";
 
     // Correctness of the next statement is tested in SQLFieldsTest
     //
-    SQLFields fields = new SQLFields( "Service", rowMeta, fieldsClause );
+    testSimpleCondition( conditionClause, "B", functions[FUNC_LARGER], "123" );
 
-    SQLCondition sqlCondition = new SQLCondition( "Service", conditionClause, rowMeta, fields );
-    Condition condition = sqlCondition.getCondition();
-
-    assertNotNull( condition );
-    assertFalse( condition.isEmpty() );
-    assertTrue( condition.isAtomic() );
-    assertEquals( "B", condition.getLeftValuename() );
-    assertEquals( ">", condition.getFunctionDesc() );
-    assertEquals( "123", condition.getRightExactString() );
   }
 
+  @Test
   public void testCondition03() throws KettleSQLException {
-    RowMetaInterface rowMeta = SQLTest.generateTest4RowMeta();
-
-    String fieldsClause = "A, B";
     String conditionClause = "B < 123";
 
     // Correctness of the next statement is tested in SQLFieldsTest
     //
-    SQLFields fields = new SQLFields( "Service", rowMeta, fieldsClause );
-
-    SQLCondition sqlCondition = new SQLCondition( "Service", conditionClause, rowMeta, fields );
-    Condition condition = sqlCondition.getCondition();
-
-    assertNotNull( condition );
-    assertFalse( condition.isEmpty() );
-    assertTrue( condition.isAtomic() );
-    assertEquals( "B", condition.getLeftValuename() );
-    assertEquals( "<", condition.getFunctionDesc() );
-    assertEquals( "123", condition.getRightExactString() );
+    testSimpleCondition( conditionClause, "B", functions[FUNC_SMALLER], "123" );
   }
 
+  @Test
   public void testCondition04() throws KettleSQLException {
-    RowMetaInterface rowMeta = SQLTest.generateTest4RowMeta();
-
-    String fieldsClause = "A, B";
     String conditionClause = "B >= 123";
 
     // Correctness of the next statement is tested in SQLFieldsTest
     //
-    SQLFields fields = new SQLFields( "Service", rowMeta, fieldsClause );
-
-    SQLCondition sqlCondition = new SQLCondition( "Service", conditionClause, rowMeta, fields );
-    Condition condition = sqlCondition.getCondition();
-
-    assertNotNull( condition );
-    assertFalse( condition.isEmpty() );
-    assertTrue( condition.isAtomic() );
-    assertEquals( "B", condition.getLeftValuename() );
-    assertEquals( ">=", condition.getFunctionDesc() );
-    assertEquals( "123", condition.getRightExactString() );
+    testSimpleCondition( conditionClause, "B", functions[FUNC_LARGER_EQUAL], "123" );
   }
 
+  @Test
   public void testCondition05() throws KettleSQLException {
-    RowMetaInterface rowMeta = SQLTest.generateTest4RowMeta();
-
-    String fieldsClause = "A, B";
     String conditionClause = "B => 123";
 
     // Correctness of the next statement is tested in SQLFieldsTest
     //
-    SQLFields fields = new SQLFields( "Service", rowMeta, fieldsClause );
-
-    SQLCondition sqlCondition = new SQLCondition( "Service", conditionClause, rowMeta, fields );
-    Condition condition = sqlCondition.getCondition();
-
-    assertNotNull( condition );
-    assertFalse( condition.isEmpty() );
-    assertTrue( condition.isAtomic() );
-    assertEquals( "B", condition.getLeftValuename() );
-    assertEquals( ">=", condition.getFunctionDesc() );
-    assertEquals( "123", condition.getRightExactString() );
+    testSimpleCondition( conditionClause, "B", functions[FUNC_LARGER_EQUAL], "123" );
   }
 
+  @Test
   public void testCondition06() throws KettleSQLException {
-    RowMetaInterface rowMeta = SQLTest.generateTest4RowMeta();
-
-    String fieldsClause = "A, B";
     String conditionClause = "B <= 123";
 
     // Correctness of the next statement is tested in SQLFieldsTest
     //
-    SQLFields fields = new SQLFields( "Service", rowMeta, fieldsClause );
-
-    SQLCondition sqlCondition = new SQLCondition( "Service", conditionClause, rowMeta, fields );
-    Condition condition = sqlCondition.getCondition();
-
-    assertNotNull( condition );
-    assertFalse( condition.isEmpty() );
-    assertTrue( condition.isAtomic() );
-    assertEquals( "B", condition.getLeftValuename() );
-    assertEquals( "<=", condition.getFunctionDesc() );
-    assertEquals( "123", condition.getRightExactString() );
+    testSimpleCondition( conditionClause, "B", functions[FUNC_SMALLER_EQUAL], "123" );
   }
 
+  @Test
   public void testCondition07() throws KettleSQLException {
-    RowMetaInterface rowMeta = SQLTest.generateTest4RowMeta();
-
-    String fieldsClause = "A, B";
-    String conditionClause = "B >= 123";
+    String conditionClause = "B =< 123";
 
     // Correctness of the next statement is tested in SQLFieldsTest
     //
-    SQLFields fields = new SQLFields( "Service", rowMeta, fieldsClause );
-
-    SQLCondition sqlCondition = new SQLCondition( "Service", conditionClause, rowMeta, fields );
-    Condition condition = sqlCondition.getCondition();
-
-    assertNotNull( condition );
-    assertFalse( condition.isEmpty() );
-    assertTrue( condition.isAtomic() );
-    assertEquals( "B", condition.getLeftValuename() );
-    assertEquals( ">=", condition.getFunctionDesc() );
-    assertEquals( "123", condition.getRightExactString() );
+    testSimpleCondition( conditionClause, "B", functions[FUNC_SMALLER_EQUAL], "123" );
   }
 
+  @Test
   public void testCondition08() throws KettleSQLException {
-    RowMetaInterface rowMeta = SQLTest.generateTest4RowMeta();
-
-    String fieldsClause = "A, B";
-    String conditionClause = "B => 123";
-
-    // Correctness of the next statement is tested in SQLFieldsTest
-    //
-    SQLFields fields = new SQLFields( "Service", rowMeta, fieldsClause );
-
-    SQLCondition sqlCondition = new SQLCondition( "Service", conditionClause, rowMeta, fields );
-    Condition condition = sqlCondition.getCondition();
-
-    assertNotNull( condition );
-    assertFalse( condition.isEmpty() );
-    assertTrue( condition.isAtomic() );
-    assertEquals( "B", condition.getLeftValuename() );
-    assertEquals( ">=", condition.getFunctionDesc() );
-    assertEquals( "123", condition.getRightExactString() );
-  }
-
-  public void testCondition09() throws KettleSQLException {
-    RowMetaInterface rowMeta = SQLTest.generateTest4RowMeta();
-
-    String fieldsClause = "A, B";
     String conditionClause = "B <> 123";
 
     // Correctness of the next statement is tested in SQLFieldsTest
     //
-    SQLFields fields = new SQLFields( "Service", rowMeta, fieldsClause );
-
-    SQLCondition sqlCondition = new SQLCondition( "Service", conditionClause, rowMeta, fields );
-    Condition condition = sqlCondition.getCondition();
-
-    assertNotNull( condition );
-    assertFalse( condition.isEmpty() );
-    assertTrue( condition.isAtomic() );
-    assertEquals( "B", condition.getLeftValuename() );
-    assertEquals( "<>", condition.getFunctionDesc() );
-    assertEquals( "123", condition.getRightExactString() );
+    testSimpleCondition( conditionClause, "B", functions[FUNC_NOT_EQUAL], "123" );
   }
 
-  public void testCondition10() throws KettleSQLException {
-    RowMetaInterface rowMeta = SQLTest.generateTest4RowMeta();
-
-    String fieldsClause = "A, B";
+  @Test
+  public void testCondition09() throws KettleSQLException {
     String conditionClause = "B IN (1, 2, 3, 4)";
 
     // Correctness of the next statement is tested in SQLFieldsTest
     //
-    SQLFields fields = new SQLFields( "Service", rowMeta, fieldsClause );
-
-    SQLCondition sqlCondition = new SQLCondition( "Service", conditionClause, rowMeta, fields );
-    Condition condition = sqlCondition.getCondition();
-
-    assertNotNull( condition );
-    assertFalse( condition.isEmpty() );
-    assertTrue( condition.isAtomic() );
-    assertEquals( "B", condition.getLeftValuename() );
-    assertEquals( "IN LIST", condition.getFunctionDesc() );
-    assertEquals( "1;2;3;4", condition.getRightExactString() );
+    testSimpleCondition( conditionClause, "B", functions[FUNC_IN_LIST], "1;2;3;4" );
   }
 
-  public void testCondition11() throws KettleSQLException {
-    RowMetaInterface rowMeta = SQLTest.generateTest4RowMeta();
-
-    String fieldsClause = "A, B";
+  @Test
+  public void testCondition10() throws KettleSQLException {
     String conditionClause = "A IN ( 'foo' , 'bar' )";
 
     // Correctness of the next statement is tested in SQLFieldsTest
     //
-    SQLFields fields = new SQLFields( "Service", rowMeta, fieldsClause );
+    testSimpleCondition( conditionClause, "A", functions[FUNC_IN_LIST], "foo;bar" );
 
-    SQLCondition sqlCondition = new SQLCondition( "Service", conditionClause, rowMeta, fields );
-    Condition condition = sqlCondition.getCondition();
-
-    assertNotNull( condition );
-    assertFalse( condition.isEmpty() );
-    assertTrue( condition.isAtomic() );
-    assertEquals( "A", condition.getLeftValuename() );
-    assertEquals( "IN LIST", condition.getFunctionDesc() );
-    assertEquals( "foo;bar", condition.getRightExactString() );
   }
 
-  public void testCondition12() throws KettleSQLException {
-    RowMetaInterface rowMeta = SQLTest.generateTest4RowMeta();
-
-    String fieldsClause = "A, B";
+  @Test
+  public void testCondition11() throws KettleSQLException {
     String conditionClause = "A REGEX 'foo.*bar'";
 
     // Correctness of the next statement is tested in SQLFieldsTest
     //
-    SQLFields fields = new SQLFields( "Service", rowMeta, fieldsClause );
-
-    SQLCondition sqlCondition = new SQLCondition( "Service", conditionClause, rowMeta, fields );
-    Condition condition = sqlCondition.getCondition();
-
-    assertNotNull( condition );
-    assertFalse( condition.isEmpty() );
-    assertTrue( condition.isAtomic() );
-    assertEquals( "A", condition.getLeftValuename() );
-    assertEquals( "REGEXP", condition.getFunctionDesc() );
-    assertEquals( "foo.*bar", condition.getRightExactString() );
+    testSimpleCondition( conditionClause, "A", functions[FUNC_REGEXP], "foo.*bar" );
   }
 
-  public void testCondition13() throws KettleSQLException {
-    RowMetaInterface rowMeta = SQLTest.generateTest4RowMeta();
-
-    String fieldsClause = "A, B";
+  @Test
+  public void testCondition12() throws KettleSQLException {
     String conditionClause = "A LIKE 'foo%'";
 
     // Correctness of the next statement is tested in SQLFieldsTest
     //
-    SQLFields fields = new SQLFields( "Service", rowMeta, fieldsClause );
+    testSimpleCondition( conditionClause, "A", functions[FUNC_LIKE], "foo%" );
 
-    SQLCondition sqlCondition = new SQLCondition( "Service", conditionClause, rowMeta, fields );
-    Condition condition = sqlCondition.getCondition();
-
-    assertNotNull( condition );
-    assertFalse( condition.isEmpty() );
-    assertTrue( condition.isAtomic() );
-    assertEquals( "A", condition.getLeftValuename() );
-    assertEquals( "LIKE", condition.getFunctionDesc() );
-    assertEquals( "foo%", condition.getRightExactString() );
   }
 
-  public void testCondition14() throws KettleSQLException {
-    RowMetaInterface rowMeta = SQLTest.generateTest4RowMeta();
-
-    String fieldsClause = "A, B";
+  @Test
+  public void testCondition13() throws KettleSQLException {
     String conditionClause = "A LIKE 'foo??bar'";
 
     // Correctness of the next statement is tested in SQLFieldsTest
     //
-    SQLFields fields = new SQLFields( "Service", rowMeta, fieldsClause );
-
-    SQLCondition sqlCondition = new SQLCondition( "Service", conditionClause, rowMeta, fields );
-    Condition condition = sqlCondition.getCondition();
-
-    assertNotNull( condition );
-    assertFalse( condition.isEmpty() );
-    assertTrue( condition.isAtomic() );
-    assertEquals( "A", condition.getLeftValuename() );
-    assertEquals( "LIKE", condition.getFunctionDesc() );
-    assertEquals( "foo??bar", condition.getRightExactString() );
+    testSimpleCondition( conditionClause, "A", functions[FUNC_LIKE], "foo??bar" );
   }
 
   // Now the more complex AND/OR/NOT situations...
   //
-  public void testCondition15() throws KettleSQLException {
+  @Test
+  public void testCondition14() throws KettleSQLException {
     RowMetaInterface rowMeta = SQLTest.generateTest4RowMeta();
 
     String fieldsClause = "A, B";
@@ -356,7 +205,8 @@ public class SQLConditionTest extends TestCase {
     assertEquals( Condition.OPERATOR_AND, two.getOperator() );
   }
 
-  public void testCondition16() throws KettleSQLException {
+  @Test
+  public void testCondition15() throws KettleSQLException {
     RowMetaInterface rowMeta = SQLTest.generateTest4RowMeta();
 
     String fieldsClause = "A, B";
@@ -387,7 +237,8 @@ public class SQLConditionTest extends TestCase {
     assertEquals( Condition.OPERATOR_AND, two.getOperator() );
   }
 
-  public void testCondition17() throws KettleSQLException {
+  @Test
+  public void testCondition16() throws KettleSQLException {
     RowMetaInterface rowMeta = SQLTest.generateTest4RowMeta();
 
     String fieldsClause = "A, B, C, D";
@@ -435,7 +286,8 @@ public class SQLConditionTest extends TestCase {
    *
    * @throws KettleSQLException
    */
-  public void testCondition18() throws KettleSQLException {
+  @Test
+  public void testCondition17() throws KettleSQLException {
     RowMetaInterface rowMeta = SQLTest.generateTest4RowMeta();
 
     String fieldsClause = "A, B, C, D";
@@ -484,7 +336,8 @@ public class SQLConditionTest extends TestCase {
     assertEquals( Condition.OPERATOR_OR, rightOr.getOperator() );
   }
 
-  public void testCondition19() throws KettleSQLException {
+  @Test
+  public void testCondition18() throws KettleSQLException {
     RowMetaInterface rowMeta = SQLTest.generateTest4RowMeta();
 
     String fieldsClause = "A, B";
@@ -529,7 +382,8 @@ public class SQLConditionTest extends TestCase {
 
   }
 
-  public void testCondition20() throws KettleSQLException {
+  @Test
+  public void testCondition19() throws KettleSQLException {
     RowMetaInterface rowMeta = SQLTest.generateTest4RowMeta();
 
     String fieldsClause = "A, B";
@@ -551,7 +405,8 @@ public class SQLConditionTest extends TestCase {
     assertEquals( "FOO", condition.getRightExactString() );
   }
 
-  public void testCondition21() throws KettleSQLException {
+  @Test
+  public void testCondition20() throws KettleSQLException {
     RowMetaInterface rowMeta = SQLTest.generateTest4RowMeta();
 
     String fieldsClause = "A, B";
@@ -583,7 +438,8 @@ public class SQLConditionTest extends TestCase {
     assertEquals( Condition.OPERATOR_AND, two.getOperator() );
   }
 
-  public void testCondition22() throws KettleSQLException {
+  @Test
+  public void testCondition21() throws KettleSQLException {
     RowMetaInterface rowMeta = SQLTest.generateTest4RowMeta();
 
     String fieldsClause = "A, B, C";
@@ -629,7 +485,8 @@ public class SQLConditionTest extends TestCase {
 
   // Brackets, quotes...
   //
-  public void testCondition23() throws KettleSQLException {
+  @Test
+  public void testCondition22() throws KettleSQLException {
     RowMetaInterface rowMeta = SQLTest.generateTest4RowMeta();
 
     String fieldsClause = "A, B";
@@ -662,7 +519,8 @@ public class SQLConditionTest extends TestCase {
 
   // Brackets, quotes...
   //
-  public void testCondition24() throws KettleSQLException {
+  @Test
+  public void testCondition23() throws KettleSQLException {
     RowMetaInterface rowMeta = SQLTest.generateTest4RowMeta();
 
     String fieldsClause = "A, B";
@@ -712,42 +570,49 @@ public class SQLConditionTest extends TestCase {
   // Parameters...
   //
 
-  public void testCondition25() throws KettleSQLException {
+  @Test
+  public void testCondition24() throws KettleSQLException {
     runParamTest( "PARAMETER('param')='FOO'",
         "param",
         "FOO" );
   }
 
+  @Test
   public void testLowerCaseParamInConditionClause() throws KettleSQLException {
     runParamTest( "parameter('param')='FOO'",
         "param",
         "FOO" );
   }
 
+  @Test
   public void testMixedCaseParamInConditionClause() throws KettleSQLException {
     runParamTest( "Parameter('param')='FOO'",
         "param",
         "FOO" );
   }
 
+  @Test
   public void testSpaceInParamNameAndValueInConditionClause() throws KettleSQLException {
     runParamTest( "Parameter('My Parameter')='Foo Bar Baz'",
         "My Parameter",
         "Foo Bar Baz" );
   }
 
+  @Test
   public void testUnquotedNumericParameterValueInConditionClause() throws KettleSQLException {
     runParamTest( "Parameter('My Parameter') = 123",
         "My Parameter",
         "123" );
   }
 
+  @Test
   public void testExtraneousWhitespaceInParameterConditionClause() throws KettleSQLException {
     runParamTest( "Parameter   ( \t     'My Parameter'  \t   )  \t= \t    'My value'",
         "My Parameter",
         "My value" );
   }
 
+  @Test
   public void testParameterNameMissingThrows() throws KettleSQLException {
     RowMetaInterface rowMeta = SQLTest.generateTest4RowMeta();
     SQLFields fields = new SQLFields( "Service", rowMeta, "A, B" );
@@ -759,6 +624,7 @@ public class SQLConditionTest extends TestCase {
     }
   }
 
+  @Test
   public void testParameterValueMissingThrows() throws KettleSQLException {
     RowMetaInterface rowMeta = SQLTest.generateTest4RowMeta();
     SQLFields fields = new SQLFields( "Service", rowMeta, "A, B" );
@@ -784,14 +650,15 @@ public class SQLConditionTest extends TestCase {
     assertEquals(
         String.format(
             "Expected condition to be of type FUNC_TRUE, was (%s)",
-            Condition.functions[condition.getFunction()] ),
+            functions[condition.getFunction()] ),
         Condition.FUNC_TRUE, condition.getFunction() );
 
     assertEquals( paramName, condition.getLeftValuename() );
     assertEquals( paramValue, condition.getRightExactString() );
   }
 
-  public void testCondition26() throws KettleSQLException {
+  @Test
+  public void testCondition25() throws KettleSQLException {
     RowMetaInterface rowMeta = SQLTest.generateTest4RowMeta();
 
     String fieldsClause = "A, B";
@@ -830,7 +697,8 @@ public class SQLConditionTest extends TestCase {
     assertEquals( "foo", param.getRightExactString() );
   }
 
-  public void testCondition27() throws Exception {
+  @Test
+  public void testCondition26() throws Exception {
 
     RowMetaInterface rowMeta = SQLTest.generateServiceRowMeta();
     String fieldsClause = "\"Service\".\"Category\" as \"c0\", \"Service\".\"Country\" as \"c1\"";
@@ -844,7 +712,8 @@ public class SQLConditionTest extends TestCase {
     assertNotNull( condition );
   }
 
-  public void testCondition28() throws Exception {
+  @Test
+  public void testCondition27() throws Exception {
 
     RowMetaInterface rowMeta = SQLTest.generateServiceRowMeta();
     String
@@ -858,7 +727,8 @@ public class SQLConditionTest extends TestCase {
     assertNotNull( condition );
   }
 
-  public void testCondition29() throws KettleSQLException {
+  @Test
+  public void testCondition28() throws KettleSQLException {
     RowMetaInterface rowMeta = SQLTest.generateGettingStartedRowMeta();
 
     String fieldsClause = "CUSTOMERNAME";
@@ -887,7 +757,9 @@ public class SQLConditionTest extends TestCase {
    *
    * @throws KettleSQLException
    */
-  public void testCondition30() throws KettleSQLException {
+
+  @Test
+  public void testCondition29() throws KettleSQLException {
     RowMetaInterface rowMeta = SQLTest.generateGettingStartedRowMeta();
 
     String fieldsClause = "CUSTOMERNAME";

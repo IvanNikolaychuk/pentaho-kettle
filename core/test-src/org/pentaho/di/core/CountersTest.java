@@ -22,17 +22,20 @@
 
 package org.pentaho.di.core;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * Test class for counters functionality.
  *
  * @author Sven Boden
  */
-public class CountersTest extends TestCase {
+public class CountersTest {
   /**
    * Test about all. Class is not too big.
    */
+  @Test
   public void testGeneralFunctionality() {
     Counters cntrs = Counters.getInstance();
     assertNull( cntrs.getCounter( "counter1" ) );

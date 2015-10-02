@@ -27,17 +27,19 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  * Test class for the basic functionality of ValueInteger.
  *
  * @author Sven Boden
  */
-public class ValueIntegerTest extends TestCase {
+public class ValueIntegerTest  {
   /**
    * Constructor test 1.
    */
+  @Test
   public void testConstructor1() {
     ValueInteger vs = new ValueInteger();
 
@@ -65,6 +67,7 @@ public class ValueIntegerTest extends TestCase {
   /**
    * Test the getters of ValueInteger
    */
+  @Test
   public void testGetters() {
     ValueInteger vs1 = new ValueInteger( -4 );
     ValueInteger vs2 = new ValueInteger( 0 );
@@ -102,6 +105,7 @@ public class ValueIntegerTest extends TestCase {
   /**
    * Test the setters of ValueInteger
    */
+  @Test
   public void testSetters() {
     ValueInteger vs = new ValueInteger( 0 );
 

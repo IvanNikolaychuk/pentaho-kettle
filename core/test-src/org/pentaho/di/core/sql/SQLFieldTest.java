@@ -22,271 +22,226 @@
 
 package org.pentaho.di.core.sql;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
+import org.junit.Test;
 import org.pentaho.di.core.Condition;
 import org.pentaho.di.core.exception.KettleSQLException;
 import org.pentaho.di.core.row.RowMetaInterface;
 import org.pentaho.di.core.row.ValueMetaInterface;
 
-public class SQLFieldTest extends TestCase {
 
-  public void testSqlField01() throws KettleSQLException {
+public class SQLFieldTest {
+  public void testSqlFieldWithNoAggregation( String fieldClause, String fieldName, String fieldAlias )
+    throws KettleSQLException {
     RowMetaInterface rowMeta = SQLTest.generateTest2RowMeta();
 
+    SQLField field = new SQLField( "Service", fieldClause, rowMeta );
+
+    assertEquals( fieldName, field.getName() );
+    assertEquals( fieldAlias, field.getAlias() );
+    assertNotNull( "The service data type was not discovered", field.getValueMeta() );
+  }
+
+  public void testSqlFieldWithAggregationEqSum( String fieldClause, String fieldName,
+                                                String fieldAlias )
+    throws KettleSQLException {
+    RowMetaInterface rowMeta = SQLTest.generateTest2RowMeta();
+
+    SQLField field = new SQLField( "Service", fieldClause, rowMeta );
+    assertEquals( fieldName, field.getName() );
+    assertEquals( fieldAlias, field.getAlias() );
+    assertEquals( SQLAggregation.SUM, field.getAggregation() );
+    assertNotNull( "The service data type was not discovered", field.getValueMeta() );
+  }
+
+  public void testSqlFieldWithAggregationEqCount( String fieldClause, String fieldName, String fieldAlias )
+    throws KettleSQLException {
+    RowMetaInterface rowMeta = SQLTest.generateTest2RowMeta();
+
+    SQLField field = new SQLField( "Service", fieldClause, rowMeta );
+    assertEquals( fieldName, field.getName() );
+    assertEquals( fieldAlias, field.getAlias() );
+    assertEquals( SQLAggregation.COUNT, field.getAggregation() );
+    assertNull( field.getValueMeta() );
+    assertTrue( field.isCountStar() );
+  }
+
+  public void testSqlFieldWithIIF( String fieldClause, String fieldLeftName, String funcDesc, String exactString,
+                                   String holeFieldName, String fieldAlias ) throws KettleSQLException {
+    RowMetaInterface rowMeta = SQLTest.generateTest2RowMeta();
+
+    SQLField field = new SQLField( "Service", fieldClause, rowMeta );
+    assertEquals( holeFieldName, field.getName() );
+    assertEquals( fieldAlias, field.getAlias() );
+    assertNull( "The service data type was discovered", field.getValueMeta() );
+
+    assertNotNull( field.getIif() );
+    Condition condition = field.getIif().getSqlCondition().getCondition();
+    assertNotNull( condition );
+    assertFalse( condition.isEmpty() );
+    assertTrue( condition.isAtomic() );
+    assertEquals( fieldLeftName, condition.getLeftValuename() );
+    assertEquals( funcDesc, condition.getFunctionDesc() );
+    assertEquals( exactString, condition.getRightExactString() );
+  }
+
+  @Test
+  public void testSqlField01() throws KettleSQLException {
     String fieldClause = "A as foo";
 
-    SQLField field = new SQLField( "Service", fieldClause, rowMeta );
-    assertEquals( "A", field.getName() );
-    assertEquals( "foo", field.getAlias() );
-    assertNotNull( "The service data type was not discovered", field.getValueMeta() );
+    testSqlFieldWithNoAggregation( fieldClause, "A", "foo" );
   }
 
+  @Test
   public void testSqlField01Alias() throws KettleSQLException {
-    RowMetaInterface rowMeta = SQLTest.generateTest2RowMeta();
-
     String fieldClause = "Service.A as foo";
 
-    SQLField field = new SQLField( "Service", fieldClause, rowMeta );
-    assertEquals( "A", field.getName() );
-    assertEquals( "foo", field.getAlias() );
-    assertNotNull( "The service data type was not discovered", field.getValueMeta() );
+    testSqlFieldWithNoAggregation( fieldClause, "A", "foo" );
   }
 
+  @Test
   public void testSqlField01QuotedAlias() throws KettleSQLException {
-    RowMetaInterface rowMeta = SQLTest.generateTest2RowMeta();
-
     String fieldClause = "\"Service\".A as foo";
 
-    SQLField field = new SQLField( "Service", fieldClause, rowMeta );
-    assertEquals( "A", field.getName() );
-    assertEquals( "foo", field.getAlias() );
-    assertNotNull( "The service data type was not discovered", field.getValueMeta() );
+    testSqlFieldWithNoAggregation( fieldClause, "A", "foo" );
   }
 
+  @Test
   public void testSqlField02() throws KettleSQLException {
-    RowMetaInterface rowMeta = SQLTest.generateTest2RowMeta();
-
     String fieldClause = "A as \"foo\"";
 
-    SQLField field = new SQLField( "Service", fieldClause, rowMeta );
-    assertEquals( "A", field.getName() );
-    assertEquals( "foo", field.getAlias() );
-    assertNotNull( "The service data type was not discovered", field.getValueMeta() );
+    testSqlFieldWithNoAggregation( fieldClause, "A", "foo" );
   }
 
+  @Test
   public void testSqlField02Alias() throws KettleSQLException {
-    RowMetaInterface rowMeta = SQLTest.generateTest2RowMeta();
-
     String fieldClause = "Service.A as \"foo\"";
 
-    SQLField field = new SQLField( "Service", fieldClause, rowMeta );
-    assertEquals( "A", field.getName() );
-    assertEquals( "foo", field.getAlias() );
-    assertNotNull( "The service data type was not discovered", field.getValueMeta() );
+    testSqlFieldWithNoAggregation( fieldClause, "A", "foo" );
   }
 
+  @Test
   public void testSqlField03() throws KettleSQLException {
-    RowMetaInterface rowMeta = SQLTest.generateTest2RowMeta();
-
     String fieldClause = "\"A\" as \"foo\"";
 
-    SQLField field = new SQLField( "Service", fieldClause, rowMeta );
-    assertEquals( "A", field.getName() );
-    assertEquals( "foo", field.getAlias() );
-    assertNotNull( "The service data type was not discovered", field.getValueMeta() );
+    testSqlFieldWithNoAggregation( fieldClause, "A", "foo" );
   }
 
+  @Test
   public void testSqlField03Alias() throws KettleSQLException {
-    RowMetaInterface rowMeta = SQLTest.generateTest2RowMeta();
-
     String fieldClause = "Service.\"A\" as \"foo\"";
 
-    SQLField field = new SQLField( "Service", fieldClause, rowMeta );
-    assertEquals( "A", field.getName() );
-    assertEquals( "foo", field.getAlias() );
-    assertNotNull( "The service data type was not discovered", field.getValueMeta() );
+    testSqlFieldWithNoAggregation( fieldClause, "A", "foo" );
   }
 
+  @Test
   public void testSqlField04() throws KettleSQLException {
-    RowMetaInterface rowMeta = SQLTest.generateTest2RowMeta();
-
     String fieldClause = "\"A\" \"foo\"";
 
-    SQLField field = new SQLField( "Service", fieldClause, rowMeta );
-    assertEquals( "A", field.getName() );
-    assertEquals( "foo", field.getAlias() );
-    assertNotNull( "The service data type was not discovered", field.getValueMeta() );
+    testSqlFieldWithNoAggregation( fieldClause, "A", "foo" );
   }
 
+  @Test
   public void testSqlField04Alias() throws KettleSQLException {
-    RowMetaInterface rowMeta = SQLTest.generateTest2RowMeta();
-
     String fieldClause = "Service.\"A\" \"foo\"";
 
-    SQLField field = new SQLField( "Service", fieldClause, rowMeta );
-    assertEquals( "A", field.getName() );
-    assertEquals( "foo", field.getAlias() );
-    assertNotNull( "The service data type was not discovered", field.getValueMeta() );
+    testSqlFieldWithNoAggregation( fieldClause, "A", "foo" );
   }
 
+  @Test
   public void testSqlField05() throws KettleSQLException {
-    RowMetaInterface rowMeta = SQLTest.generateTest2RowMeta();
-
     String fieldClause = "A   as   foo";
 
-    SQLField field = new SQLField( "Service", fieldClause, rowMeta );
-    assertEquals( "A", field.getName() );
-    assertEquals( "foo", field.getAlias() );
-    assertNotNull( "The service data type was not discovered", field.getValueMeta() );
+    testSqlFieldWithNoAggregation( fieldClause, "A", "foo" );
   }
 
+  @Test
   public void testSqlField05Alias() throws KettleSQLException {
-    RowMetaInterface rowMeta = SQLTest.generateTest2RowMeta();
-
     String fieldClause = "Service.A   as   foo";
 
-    SQLField field = new SQLField( "Service", fieldClause, rowMeta );
-    assertEquals( "A", field.getName() );
-    assertEquals( "foo", field.getAlias() );
-    assertNotNull( "The service data type was not discovered", field.getValueMeta() );
+    testSqlFieldWithNoAggregation( fieldClause, "A", "foo" );
   }
 
+  @Test
   public void testSqlField06() throws KettleSQLException {
-    RowMetaInterface rowMeta = SQLTest.generateTest2RowMeta();
-
     String fieldClause = "SUM(B) as total";
 
-    SQLField field = new SQLField( "Service", fieldClause, rowMeta );
-    assertEquals( "B", field.getName() );
-    assertEquals( "total", field.getAlias() );
-    assertEquals( SQLAggregation.SUM, field.getAggregation() );
-    assertNotNull( "The service data type was not discovered", field.getValueMeta() );
+    testSqlFieldWithAggregationEqSum( fieldClause, "B", "total" );
   }
 
+  @Test
   public void testSqlField06Alias() throws KettleSQLException {
-    RowMetaInterface rowMeta = SQLTest.generateTest2RowMeta();
-
     String fieldClause = "SUM(Service.B) as total";
 
-    SQLField field = new SQLField( "Service", fieldClause, rowMeta );
-    assertEquals( "B", field.getName() );
-    assertEquals( "total", field.getAlias() );
-    assertEquals( SQLAggregation.SUM, field.getAggregation() );
-    assertNotNull( "The service data type was not discovered", field.getValueMeta() );
+    testSqlFieldWithAggregationEqSum( fieldClause, "B", "total" );
   }
 
+  @Test
   public void testSqlField07() throws KettleSQLException {
-    RowMetaInterface rowMeta = SQLTest.generateTest2RowMeta();
-
     String fieldClause = "SUM( B ) as total";
 
-    SQLField field = new SQLField( "Service", fieldClause, rowMeta );
-    assertEquals( "B", field.getName() );
-    assertEquals( "total", field.getAlias() );
-    assertEquals( SQLAggregation.SUM, field.getAggregation() );
-    assertNotNull( "The service data type was not discovered", field.getValueMeta() );
+    testSqlFieldWithAggregationEqSum( fieldClause, "B", "total" );
   }
 
+  @Test
   public void testSqlField07Alias() throws KettleSQLException {
-    RowMetaInterface rowMeta = SQLTest.generateTest2RowMeta();
-
     String fieldClause = "SUM( Service.B ) as total";
 
-    SQLField field = new SQLField( "Service", fieldClause, rowMeta );
-    assertEquals( "B", field.getName() );
-    assertEquals( "total", field.getAlias() );
-    assertEquals( SQLAggregation.SUM, field.getAggregation() );
-    assertNotNull( "The service data type was not discovered", field.getValueMeta() );
+    testSqlFieldWithAggregationEqSum( fieldClause, "B", "total" );
   }
 
+  @Test
   public void testSqlField08() throws KettleSQLException {
-    RowMetaInterface rowMeta = SQLTest.generateTest2RowMeta();
-
     String fieldClause = "SUM( \"B\" ) as total";
 
-    SQLField field = new SQLField( "Service", fieldClause, rowMeta );
-    assertEquals( "B", field.getName() );
-    assertEquals( "total", field.getAlias() );
-    assertEquals( SQLAggregation.SUM, field.getAggregation() );
-    assertNotNull( "The service data type was not discovered", field.getValueMeta() );
+    testSqlFieldWithAggregationEqSum( fieldClause, "B", "total" );
   }
 
+  @Test
   public void testSqlField08Alias() throws KettleSQLException {
-    RowMetaInterface rowMeta = SQLTest.generateTest2RowMeta();
-
     String fieldClause = "SUM( Service.\"B\" ) as total";
 
-    SQLField field = new SQLField( "Service", fieldClause, rowMeta );
-    assertEquals( "B", field.getName() );
-    assertEquals( "total", field.getAlias() );
-    assertEquals( SQLAggregation.SUM, field.getAggregation() );
-    assertNotNull( "The service data type was not discovered", field.getValueMeta() );
+    testSqlFieldWithAggregationEqSum( fieldClause, "B", "total" );
   }
 
+  @Test
   public void testSqlField09() throws KettleSQLException {
-    RowMetaInterface rowMeta = SQLTest.generateTest2RowMeta();
-
     String fieldClause = "SUM(\"B\") as   \"total\"";
 
-    SQLField field = new SQLField( "Service", fieldClause, rowMeta );
-    assertEquals( "B", field.getName() );
-    assertEquals( "total", field.getAlias() );
-    assertEquals( SQLAggregation.SUM, field.getAggregation() );
-    assertNotNull( "The service data type was not discovered", field.getValueMeta() );
+    testSqlFieldWithAggregationEqSum( fieldClause, "B", "total" );
   }
 
+  @Test
   public void testSqlField09Alias() throws KettleSQLException {
-    RowMetaInterface rowMeta = SQLTest.generateTest2RowMeta();
-
     String fieldClause = "SUM(Service.\"B\") as   \"total\"";
 
-    SQLField field = new SQLField( "Service", fieldClause, rowMeta );
-    assertEquals( "B", field.getName() );
-    assertEquals( "total", field.getAlias() );
-    assertEquals( SQLAggregation.SUM, field.getAggregation() );
-    assertNotNull( "The service data type was not discovered", field.getValueMeta() );
+    testSqlFieldWithAggregationEqSum( fieldClause, "B", "total" );
   }
 
-  public void testSqlField10() throws KettleSQLException {
-    RowMetaInterface rowMeta = SQLTest.generateTest2RowMeta();
 
+  @Test
+  public void testSqlField10() throws KettleSQLException {
     String fieldClause = "COUNT(*) as   \"Number of lines\"";
 
-    SQLField field = new SQLField( "Service", fieldClause, rowMeta );
-    assertEquals( "*", field.getName() );
-    assertEquals( "Number of lines", field.getAlias() );
-    assertEquals( SQLAggregation.COUNT, field.getAggregation() );
-    assertNull( field.getValueMeta() );
-    assertTrue( field.isCountStar() );
+    testSqlFieldWithAggregationEqCount( fieldClause, "*", "Number of lines" );
   }
 
+  @Test
   public void testSqlField10NoAlias() throws KettleSQLException {
-    RowMetaInterface rowMeta = SQLTest.generateTest2RowMeta();
-
     String fieldClause = "COUNT(*)";
 
-    SQLField field = new SQLField( "Service", fieldClause, rowMeta );
-    assertEquals( "*", field.getName() );
-    assertEquals( "COUNT(*)", field.getAlias() );
-    assertEquals( SQLAggregation.COUNT, field.getAggregation() );
-    assertNull( field.getValueMeta() );
-    assertTrue( field.isCountStar() );
+    testSqlFieldWithAggregationEqCount( fieldClause, "*", "COUNT(*)" );
   }
 
+  @Test
   public void testSqlField10Alias() throws KettleSQLException {
-    RowMetaInterface rowMeta = SQLTest.generateTest2RowMeta();
-
     String fieldClause = "COUNT(Service.*) as   \"Number of lines\"";
 
-    SQLField field = new SQLField( "Service", fieldClause, rowMeta );
-    assertEquals( "*", field.getName() );
-    assertEquals( "Number of lines", field.getAlias() );
-    assertEquals( SQLAggregation.COUNT, field.getAggregation() );
-    assertNull( field.getValueMeta() );
-    assertTrue( field.isCountStar() );
+    testSqlFieldWithAggregationEqCount( fieldClause, "*", "Number of lines" );
   }
 
+  @Test
   public void testSqlField11() throws KettleSQLException {
     RowMetaInterface rowMeta = SQLTest.generateTest2RowMeta();
 
@@ -300,6 +255,7 @@ public class SQLFieldTest extends TestCase {
     assertTrue( field.isCountDistinct() );
   }
 
+  @Test
   public void testSqlField11Alias() throws KettleSQLException {
     RowMetaInterface rowMeta = SQLTest.generateTest2RowMeta();
 
@@ -313,86 +269,35 @@ public class SQLFieldTest extends TestCase {
     assertTrue( field.isCountDistinct() );
   }
 
+  @Test
   public void testSqlField12_Function() throws KettleSQLException {
-    RowMetaInterface rowMeta = SQLTest.generateTest2RowMeta();
-
     String fieldClause = "IIF( B>5000, 'Big', 'Small' ) as \"Sales size\"";
 
-    SQLField field = new SQLField( "Service", fieldClause, rowMeta );
-    assertEquals( "IIF( B>5000, 'Big', 'Small' )", field.getName() );
-    assertEquals( "Sales size", field.getAlias() );
-    assertNull( "The service data type was discovered", field.getValueMeta() );
-
-    assertNotNull( field.getIif() );
-    Condition condition = field.getIif().getSqlCondition().getCondition();
-    assertNotNull( condition );
-    assertFalse( condition.isEmpty() );
-    assertTrue( condition.isAtomic() );
-    assertEquals( "B", condition.getLeftValuename() );
-    assertEquals( ">", condition.getFunctionDesc() );
-    assertEquals( "5000", condition.getRightExactString() );
+    testSqlFieldWithIIF( fieldClause, "B", ">", "5000", "IIF( B>5000, 'Big', 'Small' )", "Sales size" );
   }
 
+  @Test
   public void testSqlField12Alias_Function() throws KettleSQLException {
-    RowMetaInterface rowMeta = SQLTest.generateTest2RowMeta();
-
     String fieldClause = "IIF( Service.B>5000, 'Big', 'Small' ) as \"Sales size\"";
 
-    SQLField field = new SQLField( "Service", fieldClause, rowMeta );
-    assertEquals( "IIF( Service.B>5000, 'Big', 'Small' )", field.getName() );
-    assertEquals( "Sales size", field.getAlias() );
-    assertNull( "The service data type was discovered", field.getValueMeta() );
-
-    assertNotNull( field.getIif() );
-    Condition condition = field.getIif().getSqlCondition().getCondition();
-    assertNotNull( condition );
-    assertFalse( condition.isEmpty() );
-    assertTrue( condition.isAtomic() );
-    assertEquals( "B", condition.getLeftValuename() );
-    assertEquals( ">", condition.getFunctionDesc() );
-    assertEquals( "5000", condition.getRightExactString() );
+    testSqlFieldWithIIF( fieldClause, "B", ">", "5000", "IIF( Service.B>5000, 'Big', 'Small' )", "Sales size" );
   }
 
+  @Test
   public void testSqlField13_Function() throws KettleSQLException {
-    RowMetaInterface rowMeta = SQLTest.generateTest2RowMeta();
-
     String fieldClause = "IIF( B>50, 'high', 'low' ) as nrSize";
 
-    SQLField field = new SQLField( "Service", fieldClause, rowMeta );
-    assertEquals( "IIF( B>50, 'high', 'low' )", field.getName() );
-    assertEquals( "nrSize", field.getAlias() );
-    assertNull( "The service data type was discovered", field.getValueMeta() );
-
-    assertNotNull( field.getIif() );
-    Condition condition = field.getIif().getSqlCondition().getCondition();
-    assertNotNull( condition );
-    assertFalse( condition.isEmpty() );
-    assertTrue( condition.isAtomic() );
-    assertEquals( "B", condition.getLeftValuename() );
-    assertEquals( ">", condition.getFunctionDesc() );
-    assertEquals( "50", condition.getRightExactString() );
+    testSqlFieldWithIIF( fieldClause, "B", ">", "50", "IIF( B>50, 'high', 'low' )", "nrSize" );
   }
 
+  @Test
   public void testSqlField13Alias_Function() throws KettleSQLException {
-    RowMetaInterface rowMeta = SQLTest.generateTest2RowMeta();
-
     String fieldClause = "IIF( Service.B>50, 'high', 'low' ) as nrSize";
 
-    SQLField field = new SQLField( "Service", fieldClause, rowMeta );
-    assertEquals( "IIF( Service.B>50, 'high', 'low' )", field.getName() );
-    assertEquals( "nrSize", field.getAlias() );
-    assertNull( "The service data type was discovered", field.getValueMeta() );
-
-    assertNotNull( field.getIif() );
-    Condition condition = field.getIif().getSqlCondition().getCondition();
-    assertNotNull( condition );
-    assertFalse( condition.isEmpty() );
-    assertTrue( condition.isAtomic() );
-    assertEquals( "B", condition.getLeftValuename() );
-    assertEquals( ">", condition.getFunctionDesc() );
-    assertEquals( "50", condition.getRightExactString() );
+    testSqlFieldWithIIF( fieldClause, "B", ">", "50", "IIF( Service.B>50, 'high', 'low' )", "nrSize" );
   }
 
+  @Test
   public void testSqlFieldConstants01() throws KettleSQLException {
     RowMetaInterface rowMeta = SQLTest.generateTest2RowMeta();
 
@@ -406,6 +311,7 @@ public class SQLFieldTest extends TestCase {
     assertEquals( 1L, field.getValueData() );
   }
 
+  @Test
   public void testSqlFieldConstants02() throws KettleSQLException {
     RowMetaInterface rowMeta = SQLTest.generateTest2RowMeta();
 
@@ -426,6 +332,7 @@ public class SQLFieldTest extends TestCase {
    *
    * @throws KettleSQLException
    */
+  @Test
   public void testSqlFieldCaseWhen01() throws KettleSQLException {
     RowMetaInterface rowMeta = SQLTest.generateServiceRowMeta();
 

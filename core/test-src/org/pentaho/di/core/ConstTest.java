@@ -25,15 +25,16 @@ package org.pentaho.di.core;
 import java.math.BigDecimal;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
 
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * Test class for the basic functionality of Const.
  *
  */
-public class ConstTest extends TestCase {
+public class ConstTest  {
   protected boolean isArraySorted( String[] arr ) {
     if ( arr.length < 2 ) {
       return true;
@@ -114,7 +115,7 @@ public class ConstTest extends TestCase {
     try {
       Const.nrSpacesBefore( null );
       fail( "Expected NullPointerException" );
-    } catch ( NullPointerException ex ) {
+    } catch ( NullPointerException ignored ) {
     }
 
     assertEquals( 0, Const.nrSpacesBefore( "" ) );
@@ -131,7 +132,7 @@ public class ConstTest extends TestCase {
     try {
       Const.nrSpacesAfter( null );
       fail( "Expected NullPointerException" );
-    } catch ( NullPointerException ex ) {
+    } catch ( NullPointerException ignored ) {
     }
 
     assertEquals( 0, Const.nrSpacesAfter( "" ) );
@@ -404,16 +405,33 @@ public class ConstTest extends TestCase {
     assertEquals( "lvl3", a[2] );
   }
 
+
+  public void testRound_EqualBigDecimal( String val, int place ) {
+    BigDecimal bigDecimal = new BigDecimal( val );
+    assertEquals( bigDecimal, Const.round( bigDecimal, place, BigDecimal.ROUND_UP ) );
+    assertEquals( bigDecimal, Const.round( bigDecimal, place, BigDecimal.ROUND_DOWN ) );
+    assertEquals( bigDecimal, Const.round( bigDecimal, place, BigDecimal.ROUND_CEILING ) );
+    assertEquals( bigDecimal, Const.round( bigDecimal, place, BigDecimal.ROUND_FLOOR ) );
+    assertEquals( bigDecimal, Const.round( bigDecimal, place, BigDecimal.ROUND_HALF_UP ) );
+    assertEquals( bigDecimal, Const.round( bigDecimal, place, BigDecimal.ROUND_HALF_DOWN ) );
+    assertEquals( bigDecimal, Const.round( bigDecimal, place, BigDecimal.ROUND_HALF_EVEN ) );
+    assertEquals( bigDecimal, Const.round( bigDecimal, place, Const.ROUND_HALF_CEILING ) );
+  }
+
+  public void testRound_EqualLong(Long l, int place) {
+    assertEquals( l, Const.round( l, place, BigDecimal.ROUND_UP ) );
+    assertEquals( l, Const.round( l, place, BigDecimal.ROUND_DOWN ) );
+    assertEquals( l, Const.round( l, place, BigDecimal.ROUND_CEILING ) );
+    assertEquals( l, Const.round( l, place, BigDecimal.ROUND_FLOOR ) );
+    assertEquals( l, Const.round( l, place, BigDecimal.ROUND_HALF_UP ) );
+    assertEquals( l, Const.round( l, place, BigDecimal.ROUND_HALF_DOWN ) );
+    assertEquals( l, Const.round( l, place, BigDecimal.ROUND_HALF_EVEN ) );
+    assertEquals( l, Const.round( l, place, Const.ROUND_HALF_CEILING ) );
+  }
+
   @Test
   public void testRound_BigDecimal() {
-    assertEquals( new BigDecimal( "1.0" ), Const.round( new BigDecimal( "1.0" ), 0, BigDecimal.ROUND_UP ) );
-    assertEquals( new BigDecimal( "1.0" ), Const.round( new BigDecimal( "1.0" ), 0, BigDecimal.ROUND_DOWN ) );
-    assertEquals( new BigDecimal( "1.0" ), Const.round( new BigDecimal( "1.0" ), 0, BigDecimal.ROUND_CEILING ) );
-    assertEquals( new BigDecimal( "1.0" ), Const.round( new BigDecimal( "1.0" ), 0, BigDecimal.ROUND_FLOOR ) );
-    assertEquals( new BigDecimal( "1.0" ), Const.round( new BigDecimal( "1.0" ), 0, BigDecimal.ROUND_HALF_UP ) );
-    assertEquals( new BigDecimal( "1.0" ), Const.round( new BigDecimal( "1.0" ), 0, BigDecimal.ROUND_HALF_DOWN ) );
-    assertEquals( new BigDecimal( "1.0" ), Const.round( new BigDecimal( "1.0" ), 0, BigDecimal.ROUND_HALF_EVEN ) );
-    assertEquals( new BigDecimal( "1.0" ), Const.round( new BigDecimal( "1.0" ), 0, Const.ROUND_HALF_CEILING ) );
+    testRound_EqualBigDecimal( "1.0", 0 );
 
     assertEquals( new BigDecimal( "2.0" ), Const.round( new BigDecimal( "1.2" ), 0, BigDecimal.ROUND_UP ) );
     assertEquals( new BigDecimal( "1.0" ), Const.round( new BigDecimal( "1.2" ), 0, BigDecimal.ROUND_DOWN ) );
@@ -442,14 +460,7 @@ public class ConstTest extends TestCase {
     assertEquals( new BigDecimal( "2.0" ), Const.round( new BigDecimal( "1.7" ), 0, BigDecimal.ROUND_HALF_EVEN ) );
     assertEquals( new BigDecimal( "2.0" ), Const.round( new BigDecimal( "1.7" ), 0, Const.ROUND_HALF_CEILING ) );
 
-    assertEquals( new BigDecimal( "2.0" ), Const.round( new BigDecimal( "2.0" ), 0, BigDecimal.ROUND_UP ) );
-    assertEquals( new BigDecimal( "2.0" ), Const.round( new BigDecimal( "2.0" ), 0, BigDecimal.ROUND_DOWN ) );
-    assertEquals( new BigDecimal( "2.0" ), Const.round( new BigDecimal( "2.0" ), 0, BigDecimal.ROUND_CEILING ) );
-    assertEquals( new BigDecimal( "2.0" ), Const.round( new BigDecimal( "2.0" ), 0, BigDecimal.ROUND_FLOOR ) );
-    assertEquals( new BigDecimal( "2.0" ), Const.round( new BigDecimal( "2.0" ), 0, BigDecimal.ROUND_HALF_UP ) );
-    assertEquals( new BigDecimal( "2.0" ), Const.round( new BigDecimal( "2.0" ), 0, BigDecimal.ROUND_HALF_DOWN ) );
-    assertEquals( new BigDecimal( "2.0" ), Const.round( new BigDecimal( "2.0" ), 0, BigDecimal.ROUND_HALF_EVEN ) );
-    assertEquals( new BigDecimal( "2.0" ), Const.round( new BigDecimal( "2.0" ), 0, Const.ROUND_HALF_CEILING ) );
+    testRound_EqualBigDecimal( "2.0", 0 );
 
     assertEquals( new BigDecimal( "3.0" ), Const.round( new BigDecimal( "2.2" ), 0, BigDecimal.ROUND_UP ) );
     assertEquals( new BigDecimal( "2.0" ), Const.round( new BigDecimal( "2.2" ), 0, BigDecimal.ROUND_DOWN ) );
@@ -478,14 +489,7 @@ public class ConstTest extends TestCase {
     assertEquals( new BigDecimal( "3.0" ), Const.round( new BigDecimal( "2.7" ), 0, BigDecimal.ROUND_HALF_EVEN ) );
     assertEquals( new BigDecimal( "3.0" ), Const.round( new BigDecimal( "2.7" ), 0, Const.ROUND_HALF_CEILING ) );
 
-    assertEquals( new BigDecimal( "-1.0" ), Const.round( new BigDecimal( "-1.0" ), 0, BigDecimal.ROUND_UP ) );
-    assertEquals( new BigDecimal( "-1.0" ), Const.round( new BigDecimal( "-1.0" ), 0, BigDecimal.ROUND_DOWN ) );
-    assertEquals( new BigDecimal( "-1.0" ), Const.round( new BigDecimal( "-1.0" ), 0, BigDecimal.ROUND_CEILING ) );
-    assertEquals( new BigDecimal( "-1.0" ), Const.round( new BigDecimal( "-1.0" ), 0, BigDecimal.ROUND_FLOOR ) );
-    assertEquals( new BigDecimal( "-1.0" ), Const.round( new BigDecimal( "-1.0" ), 0, BigDecimal.ROUND_HALF_UP ) );
-    assertEquals( new BigDecimal( "-1.0" ), Const.round( new BigDecimal( "-1.0" ), 0, BigDecimal.ROUND_HALF_DOWN ) );
-    assertEquals( new BigDecimal( "-1.0" ), Const.round( new BigDecimal( "-1.0" ), 0, BigDecimal.ROUND_HALF_EVEN ) );
-    assertEquals( new BigDecimal( "-1.0" ), Const.round( new BigDecimal( "-1.0" ), 0, Const.ROUND_HALF_CEILING ) );
+    testRound_EqualBigDecimal( "-1.0", 0 );
 
     assertEquals( new BigDecimal( "-2.0" ), Const.round( new BigDecimal( "-1.2" ), 0, BigDecimal.ROUND_UP ) );
     assertEquals( new BigDecimal( "-1.0" ), Const.round( new BigDecimal( "-1.2" ), 0, BigDecimal.ROUND_DOWN ) );
@@ -514,14 +518,7 @@ public class ConstTest extends TestCase {
     assertEquals( new BigDecimal( "-2.0" ), Const.round( new BigDecimal( "-1.7" ), 0, BigDecimal.ROUND_HALF_EVEN ) );
     assertEquals( new BigDecimal( "-2.0" ), Const.round( new BigDecimal( "-1.7" ), 0, Const.ROUND_HALF_CEILING ) );
 
-    assertEquals( new BigDecimal( "-2.0" ), Const.round( new BigDecimal( "-2.0" ), 0, BigDecimal.ROUND_UP ) );
-    assertEquals( new BigDecimal( "-2.0" ), Const.round( new BigDecimal( "-2.0" ), 0, BigDecimal.ROUND_DOWN ) );
-    assertEquals( new BigDecimal( "-2.0" ), Const.round( new BigDecimal( "-2.0" ), 0, BigDecimal.ROUND_CEILING ) );
-    assertEquals( new BigDecimal( "-2.0" ), Const.round( new BigDecimal( "-2.0" ), 0, BigDecimal.ROUND_FLOOR ) );
-    assertEquals( new BigDecimal( "-2.0" ), Const.round( new BigDecimal( "-2.0" ), 0, BigDecimal.ROUND_HALF_UP ) );
-    assertEquals( new BigDecimal( "-2.0" ), Const.round( new BigDecimal( "-2.0" ), 0, BigDecimal.ROUND_HALF_DOWN ) );
-    assertEquals( new BigDecimal( "-2.0" ), Const.round( new BigDecimal( "-2.0" ), 0, BigDecimal.ROUND_HALF_EVEN ) );
-    assertEquals( new BigDecimal( "-2.0" ), Const.round( new BigDecimal( "-2.0" ), 0, Const.ROUND_HALF_CEILING ) );
+    testRound_EqualBigDecimal( "-2.0", 0 );
 
     assertEquals( new BigDecimal( "-3.0" ), Const.round( new BigDecimal( "-2.2" ), 0, BigDecimal.ROUND_UP ) );
     assertEquals( new BigDecimal( "-2.0" ), Const.round( new BigDecimal( "-2.2" ), 0, BigDecimal.ROUND_DOWN ) );
@@ -550,14 +547,8 @@ public class ConstTest extends TestCase {
     assertEquals( new BigDecimal( "-3.0" ), Const.round( new BigDecimal( "-2.7" ), 0, BigDecimal.ROUND_HALF_EVEN ) );
     assertEquals( new BigDecimal( "-3.0" ), Const.round( new BigDecimal( "-2.7" ), 0, Const.ROUND_HALF_CEILING ) );
 
-    assertEquals( new BigDecimal( "0.010" ), Const.round( new BigDecimal( "0.010" ), 2, BigDecimal.ROUND_UP ) );
-    assertEquals( new BigDecimal( "0.010" ), Const.round( new BigDecimal( "0.010" ), 2, BigDecimal.ROUND_DOWN ) );
-    assertEquals( new BigDecimal( "0.010" ), Const.round( new BigDecimal( "0.010" ), 2, BigDecimal.ROUND_CEILING ) );
-    assertEquals( new BigDecimal( "0.010" ), Const.round( new BigDecimal( "0.010" ), 2, BigDecimal.ROUND_FLOOR ) );
-    assertEquals( new BigDecimal( "0.010" ), Const.round( new BigDecimal( "0.010" ), 2, BigDecimal.ROUND_HALF_UP ) );
-    assertEquals( new BigDecimal( "0.010" ), Const.round( new BigDecimal( "0.010" ), 2, BigDecimal.ROUND_HALF_DOWN ) );
-    assertEquals( new BigDecimal( "0.010" ), Const.round( new BigDecimal( "0.010" ), 2, BigDecimal.ROUND_HALF_EVEN ) );
-    assertEquals( new BigDecimal( "0.010" ), Const.round( new BigDecimal( "0.010" ), 2, Const.ROUND_HALF_CEILING ) );
+    testRound_EqualBigDecimal( "0.10", 2 );
+
 
     assertEquals( new BigDecimal( "0.020" ), Const.round( new BigDecimal( "0.012" ), 2, BigDecimal.ROUND_UP ) );
     assertEquals( new BigDecimal( "0.010" ), Const.round( new BigDecimal( "0.012" ), 2, BigDecimal.ROUND_DOWN ) );
@@ -586,14 +577,7 @@ public class ConstTest extends TestCase {
     assertEquals( new BigDecimal( "0.020" ), Const.round( new BigDecimal( "0.017" ), 2, BigDecimal.ROUND_HALF_EVEN ) );
     assertEquals( new BigDecimal( "0.020" ), Const.round( new BigDecimal( "0.017" ), 2, Const.ROUND_HALF_CEILING ) );
 
-    assertEquals( new BigDecimal( "0.020" ), Const.round( new BigDecimal( "0.020" ), 2, BigDecimal.ROUND_UP ) );
-    assertEquals( new BigDecimal( "0.020" ), Const.round( new BigDecimal( "0.020" ), 2, BigDecimal.ROUND_DOWN ) );
-    assertEquals( new BigDecimal( "0.020" ), Const.round( new BigDecimal( "0.020" ), 2, BigDecimal.ROUND_CEILING ) );
-    assertEquals( new BigDecimal( "0.020" ), Const.round( new BigDecimal( "0.020" ), 2, BigDecimal.ROUND_FLOOR ) );
-    assertEquals( new BigDecimal( "0.020" ), Const.round( new BigDecimal( "0.020" ), 2, BigDecimal.ROUND_HALF_UP ) );
-    assertEquals( new BigDecimal( "0.020" ), Const.round( new BigDecimal( "0.020" ), 2, BigDecimal.ROUND_HALF_DOWN ) );
-    assertEquals( new BigDecimal( "0.020" ), Const.round( new BigDecimal( "0.020" ), 2, BigDecimal.ROUND_HALF_EVEN ) );
-    assertEquals( new BigDecimal( "0.020" ), Const.round( new BigDecimal( "0.020" ), 2, Const.ROUND_HALF_CEILING ) );
+    testRound_EqualBigDecimal( "0.20", 2 );
 
     assertEquals( new BigDecimal( "0.030" ), Const.round( new BigDecimal( "0.022" ), 2, BigDecimal.ROUND_UP ) );
     assertEquals( new BigDecimal( "0.020" ), Const.round( new BigDecimal( "0.022" ), 2, BigDecimal.ROUND_DOWN ) );
@@ -622,14 +606,7 @@ public class ConstTest extends TestCase {
     assertEquals( new BigDecimal( "0.030" ), Const.round( new BigDecimal( "0.027" ), 2, BigDecimal.ROUND_HALF_EVEN ) );
     assertEquals( new BigDecimal( "0.030" ), Const.round( new BigDecimal( "0.027" ), 2, Const.ROUND_HALF_CEILING ) );
 
-    assertEquals( new BigDecimal( "-0.010" ), Const.round( new BigDecimal( "-0.010" ), 2, BigDecimal.ROUND_UP ) );
-    assertEquals( new BigDecimal( "-0.010" ), Const.round( new BigDecimal( "-0.010" ), 2, BigDecimal.ROUND_DOWN ) );
-    assertEquals( new BigDecimal( "-0.010" ), Const.round( new BigDecimal( "-0.010" ), 2, BigDecimal.ROUND_CEILING ) );
-    assertEquals( new BigDecimal( "-0.010" ), Const.round( new BigDecimal( "-0.010" ), 2, BigDecimal.ROUND_FLOOR ) );
-    assertEquals( new BigDecimal( "-0.010" ), Const.round( new BigDecimal( "-0.010" ), 2, BigDecimal.ROUND_HALF_UP ) );
-    assertEquals( new BigDecimal( "-0.010" ), Const.round( new BigDecimal( "-0.010" ), 2, BigDecimal.ROUND_HALF_DOWN ) );
-    assertEquals( new BigDecimal( "-0.010" ), Const.round( new BigDecimal( "-0.010" ), 2, BigDecimal.ROUND_HALF_EVEN ) );
-    assertEquals( new BigDecimal( "-0.010" ), Const.round( new BigDecimal( "-0.010" ), 2, Const.ROUND_HALF_CEILING ) );
+    testRound_EqualBigDecimal( "-0.10", 2 );
 
     assertEquals( new BigDecimal( "-0.020" ), Const.round( new BigDecimal( "-0.012" ), 2, BigDecimal.ROUND_UP ) );
     assertEquals( new BigDecimal( "-0.010" ), Const.round( new BigDecimal( "-0.012" ), 2, BigDecimal.ROUND_DOWN ) );
@@ -658,14 +635,7 @@ public class ConstTest extends TestCase {
     assertEquals( new BigDecimal( "-0.020" ), Const.round( new BigDecimal( "-0.017" ), 2, BigDecimal.ROUND_HALF_EVEN ) );
     assertEquals( new BigDecimal( "-0.020" ), Const.round( new BigDecimal( "-0.017" ), 2, Const.ROUND_HALF_CEILING ) );
 
-    assertEquals( new BigDecimal( "-0.020" ), Const.round( new BigDecimal( "-0.020" ), 2, BigDecimal.ROUND_UP ) );
-    assertEquals( new BigDecimal( "-0.020" ), Const.round( new BigDecimal( "-0.020" ), 2, BigDecimal.ROUND_DOWN ) );
-    assertEquals( new BigDecimal( "-0.020" ), Const.round( new BigDecimal( "-0.020" ), 2, BigDecimal.ROUND_CEILING ) );
-    assertEquals( new BigDecimal( "-0.020" ), Const.round( new BigDecimal( "-0.020" ), 2, BigDecimal.ROUND_FLOOR ) );
-    assertEquals( new BigDecimal( "-0.020" ), Const.round( new BigDecimal( "-0.020" ), 2, BigDecimal.ROUND_HALF_UP ) );
-    assertEquals( new BigDecimal( "-0.020" ), Const.round( new BigDecimal( "-0.020" ), 2, BigDecimal.ROUND_HALF_DOWN ) );
-    assertEquals( new BigDecimal( "-0.020" ), Const.round( new BigDecimal( "-0.020" ), 2, BigDecimal.ROUND_HALF_EVEN ) );
-    assertEquals( new BigDecimal( "-0.020" ), Const.round( new BigDecimal( "-0.020" ), 2, Const.ROUND_HALF_CEILING ) );
+    testRound_EqualBigDecimal( "-0.20", 2 );
 
     assertEquals( new BigDecimal( "-0.030" ), Const.round( new BigDecimal( "-0.022" ), 2, BigDecimal.ROUND_UP ) );
     assertEquals( new BigDecimal( "-0.020" ), Const.round( new BigDecimal( "-0.022" ), 2, BigDecimal.ROUND_DOWN ) );
@@ -694,14 +664,8 @@ public class ConstTest extends TestCase {
     assertEquals( new BigDecimal( "-0.030" ), Const.round( new BigDecimal( "-0.027" ), 2, BigDecimal.ROUND_HALF_EVEN ) );
     assertEquals( new BigDecimal( "-0.030" ), Const.round( new BigDecimal( "-0.027" ), 2, Const.ROUND_HALF_CEILING ) );
 
-    assertEquals( new BigDecimal( "100.0" ), Const.round( new BigDecimal( "100.0" ), -2, BigDecimal.ROUND_UP ) );
-    assertEquals( new BigDecimal( "100.0" ), Const.round( new BigDecimal( "100.0" ), -2, BigDecimal.ROUND_DOWN ) );
-    assertEquals( new BigDecimal( "100.0" ), Const.round( new BigDecimal( "100.0" ), -2, BigDecimal.ROUND_CEILING ) );
-    assertEquals( new BigDecimal( "100.0" ), Const.round( new BigDecimal( "100.0" ), -2, BigDecimal.ROUND_FLOOR ) );
-    assertEquals( new BigDecimal( "100.0" ), Const.round( new BigDecimal( "100.0" ), -2, BigDecimal.ROUND_HALF_UP ) );
-    assertEquals( new BigDecimal( "100.0" ), Const.round( new BigDecimal( "100.0" ), -2, BigDecimal.ROUND_HALF_DOWN ) );
-    assertEquals( new BigDecimal( "100.0" ), Const.round( new BigDecimal( "100.0" ), -2, BigDecimal.ROUND_HALF_EVEN ) );
-    assertEquals( new BigDecimal( "100.0" ), Const.round( new BigDecimal( "100.0" ), -2, Const.ROUND_HALF_CEILING ) );
+    testRound_EqualBigDecimal( "100.0", -2 );
+
 
     assertEquals( new BigDecimal( "200.0" ), Const.round( new BigDecimal( "120.0" ), -2, BigDecimal.ROUND_UP ) );
     assertEquals( new BigDecimal( "100.0" ), Const.round( new BigDecimal( "120.0" ), -2, BigDecimal.ROUND_DOWN ) );
@@ -730,14 +694,7 @@ public class ConstTest extends TestCase {
     assertEquals( new BigDecimal( "200.0" ), Const.round( new BigDecimal( "170.0" ), -2, BigDecimal.ROUND_HALF_EVEN ) );
     assertEquals( new BigDecimal( "200.0" ), Const.round( new BigDecimal( "170.0" ), -2, Const.ROUND_HALF_CEILING ) );
 
-    assertEquals( new BigDecimal( "200.0" ), Const.round( new BigDecimal( "200.0" ), -2, BigDecimal.ROUND_UP ) );
-    assertEquals( new BigDecimal( "200.0" ), Const.round( new BigDecimal( "200.0" ), -2, BigDecimal.ROUND_DOWN ) );
-    assertEquals( new BigDecimal( "200.0" ), Const.round( new BigDecimal( "200.0" ), -2, BigDecimal.ROUND_CEILING ) );
-    assertEquals( new BigDecimal( "200.0" ), Const.round( new BigDecimal( "200.0" ), -2, BigDecimal.ROUND_FLOOR ) );
-    assertEquals( new BigDecimal( "200.0" ), Const.round( new BigDecimal( "200.0" ), -2, BigDecimal.ROUND_HALF_UP ) );
-    assertEquals( new BigDecimal( "200.0" ), Const.round( new BigDecimal( "200.0" ), -2, BigDecimal.ROUND_HALF_DOWN ) );
-    assertEquals( new BigDecimal( "200.0" ), Const.round( new BigDecimal( "200.0" ), -2, BigDecimal.ROUND_HALF_EVEN ) );
-    assertEquals( new BigDecimal( "200.0" ), Const.round( new BigDecimal( "200.0" ), -2, Const.ROUND_HALF_CEILING ) );
+    testRound_EqualBigDecimal( "200.0", -2 );
 
     assertEquals( new BigDecimal( "300.0" ), Const.round( new BigDecimal( "220.0" ), -2, BigDecimal.ROUND_UP ) );
     assertEquals( new BigDecimal( "200.0" ), Const.round( new BigDecimal( "220.0" ), -2, BigDecimal.ROUND_DOWN ) );
@@ -766,14 +723,7 @@ public class ConstTest extends TestCase {
     assertEquals( new BigDecimal( "300.0" ), Const.round( new BigDecimal( "270.0" ), -2, BigDecimal.ROUND_HALF_EVEN ) );
     assertEquals( new BigDecimal( "300.0" ), Const.round( new BigDecimal( "270.0" ), -2, Const.ROUND_HALF_CEILING ) );
 
-    assertEquals( new BigDecimal( "-100.0" ), Const.round( new BigDecimal( "-100.0" ), -2, BigDecimal.ROUND_UP ) );
-    assertEquals( new BigDecimal( "-100.0" ), Const.round( new BigDecimal( "-100.0" ), -2, BigDecimal.ROUND_DOWN ) );
-    assertEquals( new BigDecimal( "-100.0" ), Const.round( new BigDecimal( "-100.0" ), -2, BigDecimal.ROUND_CEILING ) );
-    assertEquals( new BigDecimal( "-100.0" ), Const.round( new BigDecimal( "-100.0" ), -2, BigDecimal.ROUND_FLOOR ) );
-    assertEquals( new BigDecimal( "-100.0" ), Const.round( new BigDecimal( "-100.0" ), -2, BigDecimal.ROUND_HALF_UP ) );
-    assertEquals( new BigDecimal( "-100.0" ), Const.round( new BigDecimal( "-100.0" ), -2, BigDecimal.ROUND_HALF_DOWN ) );
-    assertEquals( new BigDecimal( "-100.0" ), Const.round( new BigDecimal( "-100.0" ), -2, BigDecimal.ROUND_HALF_EVEN ) );
-    assertEquals( new BigDecimal( "-100.0" ), Const.round( new BigDecimal( "-100.0" ), -2, Const.ROUND_HALF_CEILING ) );
+    testRound_EqualBigDecimal( "-100.0", -2 );
 
     assertEquals( new BigDecimal( "-200.0" ), Const.round( new BigDecimal( "-120.0" ), -2, BigDecimal.ROUND_UP ) );
     assertEquals( new BigDecimal( "-100.0" ), Const.round( new BigDecimal( "-120.0" ), -2, BigDecimal.ROUND_DOWN ) );
@@ -802,14 +752,7 @@ public class ConstTest extends TestCase {
     assertEquals( new BigDecimal( "-200.0" ), Const.round( new BigDecimal( "-170.0" ), -2, BigDecimal.ROUND_HALF_EVEN ) );
     assertEquals( new BigDecimal( "-200.0" ), Const.round( new BigDecimal( "-170.0" ), -2, Const.ROUND_HALF_CEILING ) );
 
-    assertEquals( new BigDecimal( "-200.0" ), Const.round( new BigDecimal( "-200.0" ), -2, BigDecimal.ROUND_UP ) );
-    assertEquals( new BigDecimal( "-200.0" ), Const.round( new BigDecimal( "-200.0" ), -2, BigDecimal.ROUND_DOWN ) );
-    assertEquals( new BigDecimal( "-200.0" ), Const.round( new BigDecimal( "-200.0" ), -2, BigDecimal.ROUND_CEILING ) );
-    assertEquals( new BigDecimal( "-200.0" ), Const.round( new BigDecimal( "-200.0" ), -2, BigDecimal.ROUND_FLOOR ) );
-    assertEquals( new BigDecimal( "-200.0" ), Const.round( new BigDecimal( "-200.0" ), -2, BigDecimal.ROUND_HALF_UP ) );
-    assertEquals( new BigDecimal( "-200.0" ), Const.round( new BigDecimal( "-200.0" ), -2, BigDecimal.ROUND_HALF_DOWN ) );
-    assertEquals( new BigDecimal( "-200.0" ), Const.round( new BigDecimal( "-200.0" ), -2, BigDecimal.ROUND_HALF_EVEN ) );
-    assertEquals( new BigDecimal( "-200.0" ), Const.round( new BigDecimal( "-200.0" ), -2, Const.ROUND_HALF_CEILING ) );
+    testRound_EqualBigDecimal( "-200.0", -2 );
 
     assertEquals( new BigDecimal( "-300.0" ), Const.round( new BigDecimal( "-220.0" ), -2, BigDecimal.ROUND_UP ) );
     assertEquals( new BigDecimal( "-200.0" ), Const.round( new BigDecimal( "-220.0" ), -2, BigDecimal.ROUND_DOWN ) );
@@ -1276,51 +1219,14 @@ public class ConstTest extends TestCase {
 
   @Test
   public void testRound_Long() {
-    assertEquals( 1L, Const.round( 1L, 0, BigDecimal.ROUND_UP ) );
-    assertEquals( 1L, Const.round( 1L, 0, BigDecimal.ROUND_DOWN ) );
-    assertEquals( 1L, Const.round( 1L, 0, BigDecimal.ROUND_CEILING ) );
-    assertEquals( 1L, Const.round( 1L, 0, BigDecimal.ROUND_FLOOR ) );
-    assertEquals( 1L, Const.round( 1L, 0, BigDecimal.ROUND_HALF_UP ) );
-    assertEquals( 1L, Const.round( 1L, 0, BigDecimal.ROUND_HALF_DOWN ) );
-    assertEquals( 1L, Const.round( 1L, 0, BigDecimal.ROUND_HALF_EVEN ) );
-    assertEquals( 1L, Const.round( 1L, 0, Const.ROUND_HALF_CEILING ) );
-
-    assertEquals( 2L, Const.round( 2L, 0, BigDecimal.ROUND_UP ) );
-    assertEquals( 2L, Const.round( 2L, 0, BigDecimal.ROUND_DOWN ) );
-    assertEquals( 2L, Const.round( 2L, 0, BigDecimal.ROUND_CEILING ) );
-    assertEquals( 2L, Const.round( 2L, 0, BigDecimal.ROUND_FLOOR ) );
-    assertEquals( 2L, Const.round( 2L, 0, BigDecimal.ROUND_HALF_UP ) );
-    assertEquals( 2L, Const.round( 2L, 0, BigDecimal.ROUND_HALF_DOWN ) );
-    assertEquals( 2L, Const.round( 2L, 0, BigDecimal.ROUND_HALF_EVEN ) );
-    assertEquals( 2L, Const.round( 2L, 0, Const.ROUND_HALF_CEILING ) );
-
-    assertEquals( -1L, Const.round( -1L, 0, BigDecimal.ROUND_UP ) );
-    assertEquals( -1L, Const.round( -1L, 0, BigDecimal.ROUND_DOWN ) );
-    assertEquals( -1L, Const.round( -1L, 0, BigDecimal.ROUND_CEILING ) );
-    assertEquals( -1L, Const.round( -1L, 0, BigDecimal.ROUND_FLOOR ) );
-    assertEquals( -1L, Const.round( -1L, 0, BigDecimal.ROUND_HALF_UP ) );
-    assertEquals( -1L, Const.round( -1L, 0, BigDecimal.ROUND_HALF_DOWN ) );
-    assertEquals( -1L, Const.round( -1L, 0, BigDecimal.ROUND_HALF_EVEN ) );
-    assertEquals( -1L, Const.round( -1L, 0, Const.ROUND_HALF_CEILING ) );
-
-
-    assertEquals( -2L, Const.round( -2L, 0, BigDecimal.ROUND_UP ) );
-    assertEquals( -2L, Const.round( -2L, 0, BigDecimal.ROUND_DOWN ) );
-    assertEquals( -2L, Const.round( -2L, 0, BigDecimal.ROUND_CEILING ) );
-    assertEquals( -2L, Const.round( -2L, 0, BigDecimal.ROUND_FLOOR ) );
-    assertEquals( -2L, Const.round( -2L, 0, BigDecimal.ROUND_HALF_UP ) );
-    assertEquals( -2L, Const.round( -2L, 0, BigDecimal.ROUND_HALF_DOWN ) );
-    assertEquals( -2L, Const.round( -2L, 0, BigDecimal.ROUND_HALF_EVEN ) );
-    assertEquals( -2L, Const.round( -2L, 0, Const.ROUND_HALF_CEILING ) );
-
-    assertEquals( 100L, Const.round( 100L, -2, BigDecimal.ROUND_UP ) );
-    assertEquals( 100L, Const.round( 100L, -2, BigDecimal.ROUND_DOWN ) );
-    assertEquals( 100L, Const.round( 100L, -2, BigDecimal.ROUND_CEILING ) );
-    assertEquals( 100L, Const.round( 100L, -2, BigDecimal.ROUND_FLOOR ) );
-    assertEquals( 100L, Const.round( 100L, -2, BigDecimal.ROUND_HALF_UP ) );
-    assertEquals( 100L, Const.round( 100L, -2, BigDecimal.ROUND_HALF_DOWN ) );
-    assertEquals( 100L, Const.round( 100L, -2, BigDecimal.ROUND_HALF_EVEN ) );
-    assertEquals( 100L, Const.round( 100L, -2, Const.ROUND_HALF_CEILING ) );
+    testRound_EqualLong(1L, 0);
+    testRound_EqualLong(2L, 0);
+    testRound_EqualLong(-1L, 0);
+    testRound_EqualLong(-2L, 0);
+    testRound_EqualLong(100L, -2);
+    testRound_EqualLong(-100L, -2);
+    testRound_EqualLong(200L, -2);
+    testRound_EqualLong(-200L, -2);
 
     assertEquals( 200L, Const.round( 120L, -2, BigDecimal.ROUND_UP ) );
     assertEquals( 100L, Const.round( 120L, -2, BigDecimal.ROUND_DOWN ) );
@@ -1349,15 +1255,6 @@ public class ConstTest extends TestCase {
     assertEquals( 200L, Const.round( 170L, -2, BigDecimal.ROUND_HALF_EVEN ) );
     assertEquals( 200L, Const.round( 170L, -2, Const.ROUND_HALF_CEILING ) );
 
-    assertEquals( 200L, Const.round( 200L, -2, BigDecimal.ROUND_UP ) );
-    assertEquals( 200L, Const.round( 200L, -2, BigDecimal.ROUND_DOWN ) );
-    assertEquals( 200L, Const.round( 200L, -2, BigDecimal.ROUND_CEILING ) );
-    assertEquals( 200L, Const.round( 200L, -2, BigDecimal.ROUND_FLOOR ) );
-    assertEquals( 200L, Const.round( 200L, -2, BigDecimal.ROUND_HALF_UP ) );
-    assertEquals( 200L, Const.round( 200L, -2, BigDecimal.ROUND_HALF_DOWN ) );
-    assertEquals( 200L, Const.round( 200L, -2, BigDecimal.ROUND_HALF_EVEN ) );
-    assertEquals( 200L, Const.round( 200L, -2, Const.ROUND_HALF_CEILING ) );
-
     assertEquals( 300L, Const.round( 220L, -2, BigDecimal.ROUND_UP ) );
     assertEquals( 200L, Const.round( 220L, -2, BigDecimal.ROUND_DOWN ) );
     assertEquals( 300L, Const.round( 220L, -2, BigDecimal.ROUND_CEILING ) );
@@ -1385,15 +1282,6 @@ public class ConstTest extends TestCase {
     assertEquals( 300L, Const.round( 270L, -2, BigDecimal.ROUND_HALF_EVEN ) );
     assertEquals( 300L, Const.round( 270L, -2, Const.ROUND_HALF_CEILING ) );
 
-    assertEquals( -100L, Const.round( -100L, -2, BigDecimal.ROUND_UP ) );
-    assertEquals( -100L, Const.round( -100L, -2, BigDecimal.ROUND_DOWN ) );
-    assertEquals( -100L, Const.round( -100L, -2, BigDecimal.ROUND_CEILING ) );
-    assertEquals( -100L, Const.round( -100L, -2, BigDecimal.ROUND_FLOOR ) );
-    assertEquals( -100L, Const.round( -100L, -2, BigDecimal.ROUND_HALF_UP ) );
-    assertEquals( -100L, Const.round( -100L, -2, BigDecimal.ROUND_HALF_DOWN ) );
-    assertEquals( -100L, Const.round( -100L, -2, BigDecimal.ROUND_HALF_EVEN ) );
-    assertEquals( -100L, Const.round( -100L, -2, Const.ROUND_HALF_CEILING ) );
-
     assertEquals( -200L, Const.round( -120L, -2, BigDecimal.ROUND_UP ) );
     assertEquals( -100L, Const.round( -120L, -2, BigDecimal.ROUND_DOWN ) );
     assertEquals( -100L, Const.round( -120L, -2, BigDecimal.ROUND_CEILING ) );
@@ -1420,15 +1308,6 @@ public class ConstTest extends TestCase {
     assertEquals( -200L, Const.round( -170L, -2, BigDecimal.ROUND_HALF_DOWN ) );
     assertEquals( -200L, Const.round( -170L, -2, BigDecimal.ROUND_HALF_EVEN ) );
     assertEquals( -200L, Const.round( -170L, -2, Const.ROUND_HALF_CEILING ) );
-
-    assertEquals( -200L, Const.round( -200L, -2, BigDecimal.ROUND_UP ) );
-    assertEquals( -200L, Const.round( -200L, -2, BigDecimal.ROUND_DOWN ) );
-    assertEquals( -200L, Const.round( -200L, -2, BigDecimal.ROUND_CEILING ) );
-    assertEquals( -200L, Const.round( -200L, -2, BigDecimal.ROUND_FLOOR ) );
-    assertEquals( -200L, Const.round( -200L, -2, BigDecimal.ROUND_HALF_UP ) );
-    assertEquals( -200L, Const.round( -200L, -2, BigDecimal.ROUND_HALF_DOWN ) );
-    assertEquals( -200L, Const.round( -200L, -2, BigDecimal.ROUND_HALF_EVEN ) );
-    assertEquals( -200L, Const.round( -200L, -2, Const.ROUND_HALF_CEILING ) );
 
     assertEquals( -300L, Const.round( -220L, -2, BigDecimal.ROUND_UP ) );
     assertEquals( -200L, Const.round( -220L, -2, BigDecimal.ROUND_DOWN ) );

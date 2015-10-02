@@ -31,10 +31,10 @@ import java.nio.charset.CharsetEncoder;
 import java.security.NoSuchAlgorithmException;
 import java.util.zip.GZIPOutputStream;
 
-import junit.framework.Assert;
-
 import org.apache.commons.codec.binary.Base64;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class HttpUtilTest {
 
@@ -54,7 +54,7 @@ public class HttpUtilTest {
     // decode string
     String decoded = HttpUtil.decodeBase64ZippedString( enc64 );
 
-    Assert.assertEquals( "Strings are the same after transformation", STANDART, decoded );
+    assertEquals( "Strings are the same after transformation", STANDART, decoded );
   }
 
   /**
@@ -63,11 +63,12 @@ public class HttpUtilTest {
    *
    * @throws IOException
    */
+  @Test
   public void testEncodeBase64ZippedString() throws IOException {
     String enc64 = HttpUtil.encodeBase64ZippedString( STANDART );
     String decoded = HttpUtil.decodeBase64ZippedString( enc64 );
 
-    Assert.assertEquals( "Strings are the same after transformation", STANDART, decoded );
+    assertEquals( "Strings are the same after transformation", STANDART, decoded );
   }
 
   /**

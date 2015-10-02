@@ -30,14 +30,16 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
+import org.junit.Test;
 import org.pentaho.di.core.exception.KettleEOFException;
 import org.pentaho.di.core.exception.KettleFileException;
 import org.pentaho.di.core.row.value.ValueMetaString;
 import org.pentaho.di.core.row.value.ValueMetaTimestamp;
 
-public class RowTest extends TestCase {
+public class RowTest  {
+  @Test
   public void testNormalStringConversion() throws Exception {
     SimpleDateFormat fmt = new SimpleDateFormat( "yyyy/MM/dd HH:mm:ss.SSS" );
     Object[] rowData1 =
@@ -66,6 +68,7 @@ public class RowTest extends TestCase {
     assertEquals( "false", rowMeta2.getString( rowData2, 5 ) );
   }
 
+  @Test
   public void testIndexedStringConversion() throws Exception {
     String[] colors = new String[] { "Green", "Red", "Blue", "Yellow", null, };
 
@@ -99,6 +102,7 @@ public class RowTest extends TestCase {
     assertEquals( "2007/05/07 13:04:13.203", rowMeta.getString( rowData5, 1 ) );
   }
 
+  @Test
   public void testExtractDataWithTimestampConversion() throws Exception {
     RowMetaInterface rowMeta = createTestRowMetaNormalTimestampConversion();
     Timestamp constTimestamp = Timestamp.valueOf( "2012-04-05 04:03:02.123456" );

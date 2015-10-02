@@ -25,19 +25,21 @@ package org.pentaho.di.core;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
 
+import org.junit.Test;
 import org.pentaho.di.core.row.RowMeta;
 import org.pentaho.di.core.row.RowMetaInterface;
 import org.pentaho.di.core.row.ValueMeta;
 import org.pentaho.di.core.row.ValueMetaInterface;
+
+import static org.junit.Assert.*;
 
 /**
  * Test class for the basic functionality of the blocking & batching row set.
  *
  * @author Matt Casters
  */
-public class BlockingBatchingRowSetTest extends TestCase {
+public class BlockingBatchingRowSetTest {
   public RowMetaInterface createRowMetaInterface() {
     RowMetaInterface rm = new RowMeta();
 
@@ -53,6 +55,7 @@ public class BlockingBatchingRowSetTest extends TestCase {
   /**
    * The basic stuff.
    */
+  @Test
   public void testBasicCreation() {
     RowSet set = new BlockingBatchingRowSet( 10 );
 
@@ -63,7 +66,8 @@ public class BlockingBatchingRowSetTest extends TestCase {
   /**
    * Functionality test.
    */
-  public void testFuntionality1() {
+  @Test
+  public void testFunctionality1() {
     BlockingBatchingRowSet set = new BlockingBatchingRowSet( 10 );
 
     RowMetaInterface rm = createRowMetaInterface();

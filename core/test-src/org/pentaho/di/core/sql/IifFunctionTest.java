@@ -22,15 +22,18 @@
 
 package org.pentaho.di.core.sql;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
+import org.junit.Test;
 import org.pentaho.di.core.Condition;
 import org.pentaho.di.core.row.RowMeta;
 import org.pentaho.di.core.row.RowMetaInterface;
 import org.pentaho.di.core.row.ValueMeta;
 import org.pentaho.di.core.row.ValueMetaInterface;
 
-public class IifFunctionTest extends TestCase {
+
+public class IifFunctionTest  {
+  @Test
   public void testIifFunction01() throws Exception {
 
     RowMetaInterface serviceFields = generateTestRowMeta();

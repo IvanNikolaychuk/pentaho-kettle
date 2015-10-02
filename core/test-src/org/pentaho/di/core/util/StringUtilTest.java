@@ -22,20 +22,24 @@
 
 package org.pentaho.di.core.util;
 
+import static org.junit.Assert.*;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import junit.framework.TestCase;
+import org.junit.Test;
 
 /**
  * Test class for the basic functionality of StringUtil.
  *
  * @author Sven Boden
  */
-public class StringUtilTest extends TestCase {
+public class StringUtilTest  {
   /**
    * Test initCap for JIRA PDI-619.
    */
+  @Test
   public void testinitCap() {
     assertEquals( "", StringUtil.initCap( null ) );
     assertEquals( "", StringUtil.initCap( "" ) );
@@ -85,6 +89,7 @@ public class StringUtilTest extends TestCase {
   /**
    * Test the basic substitute call.
    */
+  @Test
   public void testSubstituteBasic() {
     Map<String, String> map = createVariables1( "${", "}" );
     assertEquals( "||", StringUtil.substitute( "|${EMPTY}|", map, "${", "}" ) );
@@ -135,6 +140,7 @@ public class StringUtilTest extends TestCase {
   /**
    * Test isEmpty() call.
    */
+  @Test
   public void testIsEmpty() {
     assertTrue( StringUtil.isEmpty( (String) null ) );
     assertTrue( StringUtil.isEmpty( "" ) );
@@ -146,13 +152,14 @@ public class StringUtilTest extends TestCase {
   /**
    * Test getIndent() call.
    */
+  @Test
   public void testGetIndent() {
     assertEquals( "", StringUtil.getIndent( 0 ) );
     assertEquals( " ", StringUtil.getIndent( 1 ) );
     assertEquals( "  ", StringUtil.getIndent( 2 ) );
     assertEquals( "   ", StringUtil.getIndent( 3 ) );
   }
-
+  @Test
   public void testIsVariable() throws Exception {
     assertTrue( StringUtil.isVariable( "${somename}" ) );
     assertTrue( StringUtil.isVariable( "%%somename%%" ) );

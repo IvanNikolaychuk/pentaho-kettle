@@ -21,7 +21,7 @@ package org.pentaho.di.shared;
  *
  ******************************************************************************/
 
-import junit.framework.TestCase;
+import org.junit.Test;
 import org.pentaho.di.core.KettleEnvironment;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.metastore.api.IMetaStoreElement;
@@ -31,7 +31,9 @@ import org.pentaho.metastore.util.PentahoDefaults;
 import java.io.File;
 import java.util.List;
 
-public class TestSharedObjectsMetaStore extends TestCase {
+import static org.junit.Assert.*;
+
+public class TestSharedObjectsMetaStore {
 
   private static String databaseMetaXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
     + "<connection>" + "<name>db</name>" + "<server>127.0.0.1</server>" + "<type>H2</type>"
@@ -40,6 +42,7 @@ public class TestSharedObjectsMetaStore extends TestCase {
 
   private static String namespace = PentahoDefaults.NAMESPACE;
 
+  @Test
   public void testSharedObjectsMetaStore() throws Exception {
     KettleEnvironment.init();
 

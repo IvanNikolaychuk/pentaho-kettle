@@ -29,17 +29,22 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 
 /**
  * Test class for the basic functionality of ValueDate.
  *
  * @author Sven Boden
  */
-public class ValueDateTest extends TestCase {
+public class ValueDateTest  {
   private static Date dt = null;
 
-  static {
+  @Before
+  public void setUp() {
     TimeZone.setDefault( TimeZone.getTimeZone( "CET" ) );
     SimpleDateFormat format = new SimpleDateFormat( "yyyy/MM/dd HH:mm:ss.SSS", Locale.US );
     try {
@@ -52,6 +57,7 @@ public class ValueDateTest extends TestCase {
   /**
    * Constructor test 1.
    */
+  @Test
   public void testConstructor1() {
     ValueDate vs = new ValueDate();
     assertEquals( Value.VALUE_TYPE_DATE, vs.getType() );
@@ -78,6 +84,7 @@ public class ValueDateTest extends TestCase {
   /**
    * Test the getters of ValueDate.
    */
+  @Test
   public void testGetters() {
     TimeZone.setDefault( TimeZone.getTimeZone( "CET" ) );
 
@@ -111,6 +118,7 @@ public class ValueDateTest extends TestCase {
   /**
    * Test the setters of ValueDate.
    */
+  @Test
   public void testSetters() {
     TimeZone.setDefault( TimeZone.getTimeZone( "CET" ) );
 
@@ -119,7 +127,7 @@ public class ValueDateTest extends TestCase {
     try {
       vs.setString( null );
       fail( "Expected NullPointerException" );
-    } catch ( NullPointerException ex ) {
+    } catch ( NullPointerException ignored ) {
     }
 
     vs.setString( "unknown" );

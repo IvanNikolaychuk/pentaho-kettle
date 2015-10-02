@@ -22,7 +22,7 @@
 
 package org.pentaho.di.trans.steps.update;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 import org.pentaho.di.core.row.RowMeta;
@@ -31,7 +31,7 @@ import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.di.core.row.value.ValueMetaString;
 import org.pentaho.di.trans.step.utils.RowMetaUtils;
 
-public class UpdateSQLTest extends TestCase {
+public class UpdateSQLTest  {
 
   @Test
   public void testRowsTransform() {

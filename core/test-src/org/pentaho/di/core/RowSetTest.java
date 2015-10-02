@@ -22,8 +22,9 @@
 
 package org.pentaho.di.core;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
+import org.junit.Test;
 import org.pentaho.di.core.row.RowMeta;
 import org.pentaho.di.core.row.RowMetaInterface;
 import org.pentaho.di.core.row.ValueMeta;
@@ -34,7 +35,7 @@ import org.pentaho.di.core.row.ValueMetaInterface;
  *
  * @author Sven Boden
  */
-public class RowSetTest extends TestCase {
+public class RowSetTest  {
   public RowMetaInterface createRowMetaInterface() {
     RowMetaInterface rm = new RowMeta();
 
@@ -50,6 +51,7 @@ public class RowSetTest extends TestCase {
   /**
    * The basic stuff.
    */
+  @Test
   public void testBasicCreation() {
     RowSet set = new BlockingRowSet( 10 );
 
@@ -62,7 +64,8 @@ public class RowSetTest extends TestCase {
   /**
    * Functionality test.
    */
-  public void testFuntionality1() {
+  @Test
+  public void testFunctionality1() {
     RowSet set = new BlockingRowSet( 3 );
 
     RowMetaInterface rm = createRowMetaInterface();
@@ -164,6 +167,7 @@ public class RowSetTest extends TestCase {
   /**
    * Names test. Just for completeness.
    */
+  @Test
   public void testNames() {
     RowSet set = new BlockingRowSet( 3 );
 

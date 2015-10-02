@@ -22,13 +22,16 @@
 
 package org.pentaho.di.core.sql;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
+import org.junit.Test;
 import org.pentaho.di.core.exception.KettleSQLException;
 import org.pentaho.di.core.row.RowMetaInterface;
 
-public class SQLFieldsTest extends TestCase {
 
+public class SQLFieldsTest  {
+
+  @Test
   public void testSqlFromFields01() throws KettleSQLException {
     RowMetaInterface rowMeta = SQLTest.generateTest2RowMeta();
 
@@ -52,6 +55,7 @@ public class SQLFieldsTest extends TestCase {
     assertEquals( "B", field.getValueMeta().getName().toUpperCase() );
   }
 
+  @Test
   public void testSqlFromFields02() throws KettleSQLException {
     RowMetaInterface rowMeta = SQLTest.generateTest2RowMeta();
 
@@ -75,6 +79,7 @@ public class SQLFieldsTest extends TestCase {
     assertEquals( "B", field.getValueMeta().getName().toUpperCase() );
   }
 
+  @Test
   public void testSqlFromFields03() throws KettleSQLException {
     RowMetaInterface rowMeta = SQLTest.generateTest2RowMeta();
 
@@ -98,6 +103,7 @@ public class SQLFieldsTest extends TestCase {
     assertEquals( "B", field.getValueMeta().getName().toUpperCase() );
   }
 
+  @Test
   public void testSqlFromFields04() throws KettleSQLException {
     RowMetaInterface rowMeta = SQLTest.generateTest2RowMeta();
 
@@ -121,6 +127,7 @@ public class SQLFieldsTest extends TestCase {
     assertEquals( "B", field.getValueMeta().getName().toUpperCase() );
   }
 
+  @Test
   public void testSqlFromFields05() throws KettleSQLException {
     RowMetaInterface rowMeta = SQLTest.generateTest2RowMeta();
 
@@ -144,6 +151,7 @@ public class SQLFieldsTest extends TestCase {
     assertEquals( "B", field.getValueMeta().getName().toUpperCase() );
   }
 
+  @Test
   public void testSqlFromFields05Alias() throws KettleSQLException {
     RowMetaInterface rowMeta = SQLTest.generateTest2RowMeta();
 
@@ -167,6 +175,7 @@ public class SQLFieldsTest extends TestCase {
     assertEquals( "B", field.getValueMeta().getName().toUpperCase() );
   }
 
+  @Test
   public void testSqlFromFields06() throws KettleSQLException {
     RowMetaInterface rowMeta = SQLTest.generateTest2RowMeta();
 

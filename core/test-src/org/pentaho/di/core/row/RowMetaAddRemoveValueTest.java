@@ -22,16 +22,18 @@
 
 package org.pentaho.di.core.row;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.pentaho.di.core.KettleClientEnvironment;
 import org.pentaho.di.core.row.value.ValueMetaFactory;
 
-public class RowMetaAddRemoveValueTest extends TestCase {
+public class RowMetaAddRemoveValueTest {
 
-  @Override
-  protected void setUp() throws Exception {
+
+  @Before
+  public void setUp() throws Exception {
     KettleClientEnvironment.init();
   }
 

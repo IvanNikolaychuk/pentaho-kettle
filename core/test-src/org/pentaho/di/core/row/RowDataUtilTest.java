@@ -22,11 +22,12 @@
 
 package org.pentaho.di.core.row;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
+import org.junit.Test;
 import org.pentaho.di.core.exception.KettleValueException;
 
-public class RowDataUtilTest extends TestCase {
+public class RowDataUtilTest  {
   public boolean arrayCompare( Object[] arr1, int start1, Object[] arr2, int start2, int len ) {
     boolean rcode = true;
 
@@ -43,6 +44,7 @@ public class RowDataUtilTest extends TestCase {
     return rcode;
   }
 
+  @Test
   public void testResizeArray() throws KettleValueException {
     Object[] arr1 = new Object[] { "test", Boolean.TRUE, new Long( 100 ), new Long( 101 ), new String( "test1" ) };
     Object[] nullArr =
@@ -69,6 +71,7 @@ public class RowDataUtilTest extends TestCase {
     assertTrue( arrayCompare( arr1, 0, arr4, 0, arr1.length ) ); // Elements of arr1 are copied
   }
 
+  @Test
   public void testRemoveItem() throws KettleValueException {
     Object[] arr = new Object[] { new Long( 1L ), new Long( 2L ), new Long( 3L ), new Long( 4L ), new Long( 5L ) };
 
@@ -102,6 +105,7 @@ public class RowDataUtilTest extends TestCase {
     assertTrue( arrayCompare( newArr4, 0, comp4, 0, newArr4.length ) );
   }
 
+  @Test
   public void testAddRowData() throws KettleValueException {
     Object[] arr = new Object[] { new Long( 1L ), new Long( 2L ), new Long( 3L ) };
 
@@ -132,6 +136,7 @@ public class RowDataUtilTest extends TestCase {
     assertTrue( arrayCompare( newArr4, 0, arr, 0, arr.length ) );
   }
 
+  @Test
   public void testAddValueData() throws KettleValueException {
     Object[] arr1 = new Object[] { new Long( 1L ) };
     Object[] arr2 = new Object[] { new Long( 1L ), new Long( 2L ) };
@@ -145,6 +150,7 @@ public class RowDataUtilTest extends TestCase {
     assertTrue( arrayCompare( newArr2, 0, arr2, 0, arr2.length ) );
   }
 
+  @Test
   public void testRemoveItems() throws KettleValueException {
     Object[] arr1 =
       new Object[] { new Long( 1L ), new Long( 2L ), new Long( 3L ), new Long( 4L ), new Long( 5L ) };

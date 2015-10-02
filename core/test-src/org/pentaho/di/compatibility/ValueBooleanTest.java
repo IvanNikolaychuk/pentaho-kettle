@@ -25,17 +25,19 @@ package org.pentaho.di.compatibility;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * Test class for the basic functionality of ValueBoolean.
  *
  * @author Sven Boden
  */
-public class ValueBooleanTest extends TestCase {
+public class ValueBooleanTest {
   /**
    * Constructor test 1.
    */
+  @Test
   public void testConstructor1() {
     ValueBoolean vs = new ValueBoolean();
 
@@ -65,6 +67,7 @@ public class ValueBooleanTest extends TestCase {
   /**
    * Test the getters of ValueBoolean
    */
+  @Test
   public void testGetters() {
     ValueBoolean vs1 = new ValueBoolean( true );
     ValueBoolean vs2 = new ValueBoolean( false );
@@ -94,6 +97,7 @@ public class ValueBooleanTest extends TestCase {
   /**
    * Test the setters of ValueBoolean
    */
+  @Test
   public void testSetters() {
     ValueBoolean vs = new ValueBoolean( true );
 
@@ -143,6 +147,7 @@ public class ValueBooleanTest extends TestCase {
   /**
    * Test clone()
    */
+  @Test
   public void testClone() {
     ValueBoolean vs1 = new ValueBoolean( true );
 

@@ -30,7 +30,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
 import org.junit.After;
 import org.junit.Before;
@@ -51,7 +51,7 @@ import org.pentaho.di.trans.step.StepMeta;
 import org.pentaho.di.trans.steps.mock.StepMockHelper;
 import org.pentaho.metastore.api.IMetaStore;
 
-public class GroupByTest extends TestCase {
+public class GroupByTest {
   private StepMockHelper<GroupByMeta, GroupByData> mockHelper;
 
   @Before
