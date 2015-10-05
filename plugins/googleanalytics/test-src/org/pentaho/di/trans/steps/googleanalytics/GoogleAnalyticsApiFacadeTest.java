@@ -23,19 +23,41 @@
 package org.pentaho.di.trans.steps.googleanalytics;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 import java.io.FileNotFoundException;
+
+import java.util.Arrays;
+import java.util.Collection;
 
 /**
  * @author Pavel Sakun
  */
+@RunWith( Parameterized.class )
 public class GoogleAnalyticsApiFacadeTest {
-  @Test( expected = FileNotFoundException.class )
-  public void testWindowsUnixPathToKeyFile() throws Exception {
-    String[] pathsToTest = {"C:/key.p12", "C:\\key.p12", "/key.p12",
-        "file:///C:/key.p12",  "file:///C:\\key.p12", "file:///key.p12" };
-    for ( String path : pathsToTest ) {
-      GoogleAnalyticsApiFacade.createFor( "application-name", "account", path );
-    }
+  private String path;
+
+  public GoogleAnalyticsApiFacadeTest( String path ) {
+    this.path = path;
   }
+
+  @Parameterized.Parameters
+  public static Collection primeNumbers() {
+    return Arrays.asList(
+      new String[][] {
+        { "C:/key.p12" },
+        { "C:\\key.p12" },
+        { "/key.p12" },
+        { "file:///C:/key.p12" },
+        { "file:///C:\\key.p12" },
+        //      { "file:///key.p12" } - Path is incorrect.
+      } );
+  }
+
+  @Test( expected = FileNotFoundException.class )
+  public void test() throws Exception {
+    GoogleAnalyticsApiFacade.createFor( "application-name", "account", path );
+  }
+
 }
