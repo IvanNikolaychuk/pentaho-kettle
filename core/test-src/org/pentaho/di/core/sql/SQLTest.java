@@ -492,16 +492,14 @@ public class SQLTest  {
 
     assertEquals( 5, sql.getLimitValues().getLimit() );
 
-    sqlString = "SELECT A, B, C\nFROM Service\nWHERE B > 5\nORDER BY B DESC\nLIMIT ERROR5";
-    sql = new SQL( sqlString );
-    rowMeta = generateTest4RowMeta();
+  }
 
-    try {
-      sql.parse( rowMeta );
-      fail();
-    } catch ( KettleSQLException e ) {
-      // Should throw a KettleSQLException
-    }
+  @Test(expected = KettleSQLException.class)
+  public void testParse() throws KettleSQLException {
+    String sqlString = "SELECT A, B, C\nFROM Service\nWHERE B > 5\nORDER BY B DESC\nLIMIT ERROR5";
+    SQL sql = new SQL( sqlString );
+    RowMetaInterface rowMeta = generateTest4RowMeta();
+    sql.parse( rowMeta );
   }
 
   public static RowMetaInterface generateTest2RowMeta() {

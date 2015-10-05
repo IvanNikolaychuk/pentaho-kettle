@@ -34,7 +34,7 @@ import org.pentaho.di.trans.step.utils.RowMetaUtils;
 public class UpdateSQLTest  {
 
   @Test
-  public void testRowsTransform() {
+  public void testRowsTransform() throws Exception {
 
     String[] keyLookup = new String[] { "Name" };
     String[] keyStream = new String[] { "FirstName" };
@@ -47,7 +47,6 @@ public class UpdateSQLTest  {
     prev.addValueMeta( new ValueMetaString( updateStream[1] ) );
     prev.addValueMeta( new ValueMetaString( updateStream[2] ) );
 
-    try {
       RowMetaInterface result =
           RowMetaUtils.getRowMetaForUpdate( prev, keyLookup, keyStream, updateLookup, updateStream );
 
@@ -63,10 +62,6 @@ public class UpdateSQLTest  {
 
       assertEquals( result.getValueMeta( 3 ).getName(), updateStream[2] );
       assertEquals( prev.getValueMeta( 3 ).getName(), updateStream[2] );
-    } catch ( Exception ex ) {
-      ex.printStackTrace();
-      fail();
-    }
   }
 
 }
