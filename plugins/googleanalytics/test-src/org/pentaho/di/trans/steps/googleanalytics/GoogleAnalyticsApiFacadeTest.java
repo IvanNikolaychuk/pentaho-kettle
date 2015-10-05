@@ -56,7 +56,7 @@ public class GoogleAnalyticsApiFacadeTest {
   }
 
   @Test( expected = FileNotFoundException.class )
-  public void test() throws Exception {
+  public void testWindowsUnixPathToKeyFile() throws Exception {
     GoogleAnalyticsApiFacade.createFor( "application-name", "account", path );
   }
 
