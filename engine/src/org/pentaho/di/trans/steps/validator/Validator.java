@@ -408,18 +408,12 @@ public class Validator extends BaseStep implements StepInterface {
             }
           }
 
-          // Numeric data or strings with only
+          // Numeric data or strings with only digits
           if ( field.isOnlyNumericAllowed() ) {
-            if ( valueMeta.isNumeric() || !containsOnlyDigits( valueMeta.getString( valueData ) ) ) {
-              KettleValidatorException exception =
-                new KettleValidatorException(
-                  this, field, KettleValidatorException.ERROR_NON_NUMERIC_DATA, BaseMessages.getString(
-                    PKG, "Validator.Exception.NonNumericDataNotAllowed", field.getFieldName(), valueMeta
-                      .toStringMeta() ), field.getFieldName() );
-              exceptions.add( exception );
-              if ( !meta.isValidatingAll() ) {
-                return exceptions;
-              }
+            boolean isNumeric = dataIsOnlyNumeric( valueMeta, valueData, exceptions, field );
+
+            if ( !meta.isValidatingAll() && !isNumeric ) {
+              return exceptions;
             }
           }
 
@@ -524,6 +518,24 @@ public class Validator extends BaseStep implements StepInterface {
 
     return exceptions;
   }
+
+  protected boolean dataIsOnlyNumeric( ValueMetaInterface valueMeta, Object valueData,
+                                       List<KettleValidatorException> exceptions, Validation field )
+    throws KettleValueException {
+    if ( !valueMeta.isNumeric() && !containsOnlyDigits( valueMeta.getString( valueData ) ) ) {
+      KettleValidatorException exception =
+        new KettleValidatorException(
+          this, field, KettleValidatorException.ERROR_NON_NUMERIC_DATA, BaseMessages.getString(
+          PKG, "Validator.Exception.NonNumericDataNotAllowed", field.getFieldName(), valueMeta
+            .toStringMeta() ), field.getFieldName() );
+      exceptions.add( exception );
+      return false;
+    }
+
+    return true;
+  }
+
+
 
   private boolean containsOnlyDigits( String string ) {
     for ( char c : string.toCharArray() ) {

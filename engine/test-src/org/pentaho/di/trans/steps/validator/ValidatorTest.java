@@ -24,13 +24,12 @@
 
 package org.pentaho.di.trans.steps.validator;
 
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +40,9 @@ import org.junit.Test;
 import org.pentaho.di.core.exception.KettlePluginException;
 import org.pentaho.di.core.logging.LoggingObjectInterface;
 import org.pentaho.di.core.row.ValueMetaInterface;
+import org.pentaho.di.core.row.value.ValueMetaBigNumber;
+import org.pentaho.di.core.row.value.ValueMetaInteger;
+import org.pentaho.di.core.row.value.ValueMetaNumber;
 import org.pentaho.di.core.row.value.ValueMetaString;
 import org.pentaho.di.trans.steps.mock.StepMockHelper;
 
@@ -56,13 +58,14 @@ public class ValidatorTest {
     when( mockHelper.logChannelInterfaceFactory.create( any(), any( LoggingObjectInterface.class ) ) ).thenReturn(
       mockHelper.logChannelInterface );
     when( mockHelper.trans.isRunning() ).thenReturn( true );
+
+    validator =
+      spy( new Validator(
+        mockHelper.stepMeta, mockHelper.stepDataInterface, 0, mockHelper.transMeta, mockHelper.trans ) );
   }
 
   @Test
   public void testPatternExpectedCompile() throws KettlePluginException {
-    validator =
-      spy( new Validator(
-        mockHelper.stepMeta, mockHelper.stepDataInterface, 0, mockHelper.transMeta, mockHelper.trans ) );
 
     // ValidatorData data = (ValidatorData) mockHelper.initStepDataInterface;
     // ValidatorMeta meta = (ValidatorMeta) mockHelper.initStepMetaInterface;
@@ -94,6 +97,62 @@ public class ValidatorTest {
 
     validator.init( meta, data );
 
+  }
+
+  @Test
+  public void checkIntegerDataIsNumeric() throws Exception {
+    ValueMetaInterface valueMeta = mock( ValueMetaInteger.class );
+    Object valueData = 32;
+    when( valueMeta.getString( valueData ) ).thenReturn( "" + valueData );
+
+    assertEquals( validator
+        .dataIsOnlyNumeric( valueMeta, valueData, new ArrayList<KettleValidatorException>(), mock( Validation.class ) ),
+      true );
+  }
+
+  @Test
+  public void checkNumberDataIsNumeric() throws Exception {
+    ValueMetaInterface valueMeta = mock( ValueMetaNumber.class );
+    Object valueData = 32;
+    when( valueMeta.getString( valueData ) ).thenReturn( "" + valueData );
+
+    assertEquals( validator
+        .dataIsOnlyNumeric( valueMeta, valueData, new ArrayList<KettleValidatorException>(), mock( Validation.class ) ),
+      true );
+  }
+
+  @Test
+  public void checkBigNumberDataIsNumeric() throws Exception {
+    ValueMetaInterface valueMeta = mock( ValueMetaBigNumber.class );
+    Object valueData = 32;
+    when( valueMeta.getString( valueData ) ).thenReturn( "" + valueData );
+
+    assertEquals( validator
+        .dataIsOnlyNumeric( valueMeta, valueData, new ArrayList<KettleValidatorException>(), mock( Validation.class ) ),
+      true );
+  }
+
+
+  @Test
+  public void checkStringWithoutDigitsDataIsNumeric() throws Exception {
+    ValueMetaInterface valueMeta = mock( ValueMetaBigNumber.class );
+    Object valueData = "string";
+    when( valueMeta.getString( valueData ) ).thenReturn( (String) valueData );
+
+    assertEquals( validator
+        .dataIsOnlyNumeric( valueMeta, valueData, new ArrayList<KettleValidatorException>(), mock( Validation.class ) ),
+      false );
+  }
+
+  @Test
+  public void checkStringWithAllDigitsDataIsNumeric() throws Exception {
+    ValueMetaInterface valueMeta = mock( ValueMetaBigNumber.class );
+    Object valueData = "123";
+    when( valueMeta.getString( valueData ) ).thenReturn( (String) valueData );
+
+    assertEquals( validator
+        .dataIsOnlyNumeric( valueMeta, valueData, new ArrayList<KettleValidatorException>(), mock( Validation.class ) ),
+      true );
   }
 
 }
