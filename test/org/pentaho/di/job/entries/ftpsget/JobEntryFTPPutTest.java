@@ -1,18 +1,3 @@
-package org.pentaho.di.job.entries.ftpsget;
-
-import org.apache.commons.io.FileUtils;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.pentaho.di.core.KettleEnvironment;
-import org.pentaho.di.core.Result;
-import org.pentaho.di.core.exception.KettleException;
-import org.pentaho.di.job.Job;
-import org.pentaho.di.job.JobMeta;
-import org.pentaho.di.job.entries.ftpput.JobEntryFTPPUT;
 /*! ******************************************************************************
  *
  * Pentaho Data Integration
@@ -35,29 +20,43 @@ import org.pentaho.di.job.entries.ftpput.JobEntryFTPPUT;
  *
  ******************************************************************************/
 
+package org.pentaho.di.job.entries.ftpsget;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.pentaho.di.job.entries.ftpsget.TestFtpServer.DEFAULT_PORT;
+import static org.pentaho.di.job.entries.ftpsget.TestFtpServer.USER;
+import static org.pentaho.di.job.entries.ftpsget.TestFtpServer.PASSWORD;
+
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
+import org.pentaho.di.core.KettleEnvironment;
+import org.pentaho.di.core.Result;
+import org.pentaho.di.job.Job;
+import org.pentaho.di.job.JobMeta;
+import org.pentaho.di.job.entries.ftpput.JobEntryFTPPUT;
 import org.pentaho.di.job.entry.JobEntryCopy;
-
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
-import static org.pentaho.di.job.entries.ftpsget.MyFtpServer.*;
 
-public class JobEntryFTPPutTest {
+public class JobEntryFtpPutTest {
+  public static TemporaryFolder folder;
   private final static String FILE = "test.txt";
 
-  private static MyFtpServer server;
+  private static TestFtpServer server;
   private Job job;
   private JobEntryFTPPUT entry;
   private FTPSConnection connection;
-  private Path tmpPath;
 
   @BeforeClass
   public static void createServer() throws Exception {
     KettleEnvironment.init();
 
-    server = createDefault();
+    server = TestFtpServer.createDefault();
     server.start();
   }
 
@@ -69,19 +68,18 @@ public class JobEntryFTPPutTest {
     }
   }
 
-
   @Before
   public void setUp() throws Exception {
+    folder = new TemporaryFolder();
+    folder.create();
+    folder.newFile( FILE );
+
     connection =
       new FTPSConnection( FTPSConnection.CONNECTION_TYPE_FTP, "localhost", Integer.parseInt( DEFAULT_PORT ), USER,
         PASSWORD );
     connection.connect();
 
-    tmpPath = Files.createTempDirectory( "JobEntryFTPPutTest" );
-    String serverBaseDir = "file:////" +  tmpPath.toString();
-
-    File file = new File( tmpPath.toString() + File.separator + FILE );
-    file.createNewFile();
+    String serverBaseDir = "file:////" + folder.getRoot();
 
     job = new Job( null, new JobMeta() );
     job.getJobMeta().addJobEntry( new JobEntryCopy( entry ) );
@@ -110,20 +108,18 @@ public class JobEntryFTPPutTest {
     }
     entry = null;
     job = null;
-    FileUtils.deleteDirectory( new File( tmpPath.toString() ) );
+    folder.delete();
   }
 
   @Test
   public void fileIsPutInFTPServer() throws Exception {
-    try {
+    if ( connection.isFileExists( FILE ) ) {
       connection.deleteFile( FILE );
-    } catch ( KettleException ex ){
-      // there was no such file
     }
-    Assert.assertFalse( connection.isFileExists( FILE ) );
 
-    entry.execute( new Result(), 5 );
-    Assert.assertTrue( connection.isFileExists( FILE ) );
+    assertFalse( connection.isFileExists( FILE ) );
+    entry.execute( new Result(), 0 );
+    assertTrue( connection.isFileExists( FILE ) );
   }
 
 }

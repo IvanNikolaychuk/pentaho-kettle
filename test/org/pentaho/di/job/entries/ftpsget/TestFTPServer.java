@@ -34,7 +34,7 @@ import org.apache.ftpserver.usermanager.impl.WritePermission;
 import java.util.Collections;
 
 
-public class MyFtpServer {
+public class TestFTPServer {
 
   public static final String USER = "user";
   public static final String PASSWORD = "user";
@@ -43,11 +43,11 @@ public class MyFtpServer {
   private FtpServer server;
 
 
-  public static MyFtpServer createDefault() throws Exception {
-    return new MyFtpServer( DEFAULT_PORT, USER, PASSWORD );
+  public static TestFTPServer createDefault() throws Exception {
+    return new TestFTPServer( DEFAULT_PORT, USER, PASSWORD );
   }
 
-  public MyFtpServer( String port, String username, String password ) throws Exception {
+  public TestFTPServer( String port, String username, String password ) throws Exception {
     this.server = createServer( port, username, password );
   }
 
