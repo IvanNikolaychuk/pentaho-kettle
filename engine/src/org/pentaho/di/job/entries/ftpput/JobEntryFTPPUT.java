@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2002-2013 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2015 by Pentaho : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -32,6 +32,7 @@ import static org.pentaho.di.job.entry.validator.JobEntryValidatorUtils.notNullV
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -728,8 +729,8 @@ public class JobEntryFTPPUT extends JobEntryBase implements Cloneable, JobEntryI
       // Joerg: ..that's for Java5
       // ArrayList<String> myFileList = new ArrayList<String>();
       ArrayList<String> myFileList = new ArrayList<String>();
+      File localFiles = new File( new URL( realLocalDirectory ).getPath() );
 
-      File localFiles = new File( realLocalDirectory );
       File[] children = localFiles.listFiles();
       for ( int i = 0; i < children.length; i++ ) {
         // Get filename of file or directory
@@ -793,7 +794,7 @@ public class JobEntryFTPPUT extends JobEntryBase implements Cloneable, JobEntryI
                 PKG, "JobFTPPUT.Log.PuttingFileToRemoteDirectory", filelist[i], realRemoteDirectory ) );
             }
 
-            String localFilename = realLocalDirectory + Const.FILE_SEPARATOR + filelist[i];
+            String localFilename = localFiles.getPath() + Const.FILE_SEPARATOR + filelist[ i ];
             ftpclient.put( localFilename, filelist[i] );
 
             filesput++;
