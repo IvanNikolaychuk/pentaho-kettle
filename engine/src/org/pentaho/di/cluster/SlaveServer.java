@@ -675,7 +675,7 @@ public class SlaveServer extends ChangedFlag implements Cloneable, SharedObjectI
     return current + RANDOM.nextInt( (int) Math.min( Integer.MAX_VALUE, current / 4L ) );
   }
 
-  public synchronized String execService( String service ) throws Exception {
+  public String execService( String service ) throws Exception {
     return execService( service, new HashMap<String, String>() );
   }
 
@@ -846,7 +846,7 @@ public class SlaveServer extends ChangedFlag implements Cloneable, SharedObjectI
     return WebResult.fromXMLString( xml );
   }
 
-  public synchronized WebResult deAllocateServerSockets( String transName, String clusteredRunId ) throws Exception {
+  public WebResult deAllocateServerSockets( String transName, String clusteredRunId ) throws Exception {
     String xml =
         execService( CleanupTransServlet.CONTEXT_PATH + "/?name=" + URLEncoder.encode( transName, "UTF-8" ) + "&id="
             + Const.NVL( clusteredRunId, "" ) + "&xml=Y&sockets=Y" );
