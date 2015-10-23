@@ -474,6 +474,8 @@ public class SlaveServer extends ChangedFlag implements Cloneable, SharedObjectI
     return postMethod;
   }
 
+  // Synchronized because it uses getHttpClient method, that returns
+  // an instance of thread unsafe singleton class (SlaveConnectionManager)
   public synchronized String sendXML( String xml, String service ) throws Exception {
     PostMethod method = buildSendXMLMethod( xml.getBytes( Const.XML_ENCODING ), service );
 
@@ -675,6 +677,8 @@ public class SlaveServer extends ChangedFlag implements Cloneable, SharedObjectI
     return current + RANDOM.nextInt( (int) Math.min( Integer.MAX_VALUE, current / 4L ) );
   }
 
+  // No need to be synchronized, because of
+  // delegating to synchronized method.
   public String execService( String service ) throws Exception {
     return execService( service, new HashMap<String, String>() );
   }
@@ -707,6 +711,8 @@ public class SlaveServer extends ChangedFlag implements Cloneable, SharedObjectI
     return method;
   }
 
+  // Synchronized because it uses getHttpClient method, that returns
+  // an instance of thread unsafe singleton class (SlaveConnectionManager)
   public synchronized String execService( String service, Map<String, String> headerValues ) throws Exception {
     // Prepare HTTP get
     //
@@ -846,6 +852,7 @@ public class SlaveServer extends ChangedFlag implements Cloneable, SharedObjectI
     return WebResult.fromXMLString( xml );
   }
 
+  // No need to be synchronized because it shares no common resources.
   public WebResult deAllocateServerSockets( String transName, String clusteredRunId ) throws Exception {
     String xml =
         execService( CleanupTransServlet.CONTEXT_PATH + "/?name=" + URLEncoder.encode( transName, "UTF-8" ) + "&id="
@@ -888,6 +895,8 @@ public class SlaveServer extends ChangedFlag implements Cloneable, SharedObjectI
     return names;
   }
 
+  // Should be synchronized, because shares global resources.
+  // For example in InetAddress class.
   public synchronized int allocateServerSocket( String runId, int portRangeStart, String hostname,
                                                 String transformationName, String sourceSlaveName,
                                                 String sourceStepName, String sourceStepCopy,
